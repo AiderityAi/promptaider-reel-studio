@@ -1967,290 +1967,522 @@ function showGenOut(text){
   document.getElementById('tagOut').classList.remove('show');
 }
 
-/* ══════════════════════════════════════════════
-   VIDEO RECORDING ENGINE
-   Uses MediaRecorder + html2canvas to capture
-   the phone preview as a real WebM video file
-   ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   VIDEO EXPORT ENGINE v3
+   Pure Canvas 2D — fixed setInterval frame pump.
+   Each scene is drawn frame-by-frame with setInterval
+   so the MediaRecorder always gets real pixel data even
+   when the tab is in the background.
+   ══════════════════════════════════════════════════════════ */
 
-let mediaRecorder = null;
-let recordedChunks = [];
-let isRecording = false;
-let batchQueue = [];
-let batchRunning = false;
-let exportCancelled = false;
+let _mr = null, _chunks = [], _isRec = false, _cancelled = false;
+let _batchRunning = false;
 
-// ── RECORD SINGLE REEL ────────────────────────────────────
+const EV = {
+  W: 540, H: 960,          // 9:16 canvas
+  FPS: 25,                  // frames per second
+  SCENE_MS: [2000,2000,5000,3000,3000],
+  get TOTAL_MS(){ return this.SCENE_MS.reduce((a,b)=>a+b,0); }
+};
+
+// ── Public: record current reel ──────────────────────────────
 function recordCurrentReel(){
-  if(isRecording){ stopRecording(); return; }
-  const reelNum = curReel;
-  const reelName = `promptaider_reel${String(reelNum).padStart(3,'0')}`;
-  startVideoRecording(reelNum, reelName, ()=>{
-    setRecStatus('');
-    const btn = document.getElementById('recBtn');
-    if(btn){ btn.classList.remove('recording'); document.getElementById('recBtnLabel').textContent='Record Reel'; }
+  if(_isRec){ _cancelExport(); return; }
+  const n = curReel;
+  _doRecord(n, `promptaider_reel${String(n).padStart(3,'0')}`, ()=>{
+    _setStatus('');
+    _recBtnIdle();
     hideExportBar();
   });
 }
 
-// ── CORE RECORDING FUNCTION ───────────────────────────────
-function startVideoRecording(reelNum, filename, onComplete){
-  if(isRecording) return;
-  exportCancelled = false;
-  isRecording = true;
+// ── Core recorder ─────────────────────────────────────────────
+function _doRecord(reelNum, filename, onDone){
+  if(_isRec) return;
+  _cancelled = false;
+  _isRec     = true;
+  _chunks    = [];
 
-  // UI feedback
+  // Button UI
   const btn = document.getElementById('recBtn');
-  if(btn){ btn.classList.add('recording'); document.getElementById('recBtnLabel').textContent='⏹ Stop'; }
-  setRecStatus('⏺ Recording...');
-  showExportBar('RECORDING', `Reel ${String(reelNum).padStart(2,'0')} — ${IDEAS[reelNum-1].cat}`, 0);
+  if(btn){ btn.classList.add('recording');
+           document.getElementById('recBtnLabel').textContent='⏹ Stop'; }
+  _setStatus('⏺ Recording…');
+  showExportBar('RECORDING', `Reel ${String(reelNum).padStart(2,'0')}`, 0);
   document.getElementById('barRecDot').style.display='block';
 
-  // Load the reel first
-  loadReel(reelNum);
+  // Build offscreen canvas
+  const cvs = document.createElement('canvas');
+  cvs.width  = EV.W;
+  cvs.height = EV.H;
+  const ctx  = cvs.getContext('2d');
 
-  // Give DOM a moment to render, then start recording
-  setTimeout(()=>{
-    if(exportCancelled){ isRecording=false; return; }
-    captureVideoFromPhone(filename, onComplete);
-  }, 400);
-}
+  // Choose best supported codec
+  const mime = ['video/webm;codecs=vp9',
+                'video/webm;codecs=vp8',
+                'video/webm'].find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
 
-// ── CANVAS → MEDIARECORDER PIPELINE ──────────────────────
-function captureVideoFromPhone(filename, onComplete){
-  const phone = document.getElementById('phoneEl');
-  const SCENE_DURATIONS_MS = [2000, 2000, 5000, 3000, 3000];
-  const TOTAL_MS = SCENE_DURATIONS_MS.reduce((a,b)=>a+b, 0); // 15000ms
-  const FPS = 24;
-  const FRAME_MS = 1000 / FPS;
-
-  // Create offscreen canvas at phone size
-  const W = phone.offsetWidth  || 240;
-  const H = phone.offsetHeight || 426;
-  const canvas = document.createElement('canvas');
-  canvas.width  = W;
-  canvas.height = H;
-  const ctx = canvas.getContext('2d');
-
-  // Set up MediaRecorder on the canvas stream
-  const stream = canvas.captureStream(FPS);
-  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
-    ? 'video/webm;codecs=vp9'
-    : MediaRecorder.isTypeSupported('video/webm;codecs=vp8')
-    ? 'video/webm;codecs=vp8'
-    : 'video/webm';
-
-  recordedChunks = [];
-  mediaRecorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 4000000 });
-  mediaRecorder.ondataavailable = e => { if(e.data.size>0) recordedChunks.push(e.data); };
-  mediaRecorder.onstop = ()=>{
-    if(exportCancelled){ isRecording=false; return; }
-    const blob = new Blob(recordedChunks, { type: mimeType });
+  _mr = new MediaRecorder(cvs.captureStream(EV.FPS), {
+    mimeType: mime,
+    videoBitsPerSecond: 5_000_000
+  });
+  _mr.ondataavailable = e => { if(e.data && e.data.size > 0) _chunks.push(e.data); };
+  _mr.onstop = () => {
+    if(_cancelled){ _isRec = false; return; }
+    const blob = new Blob(_chunks, { type: mime });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
-    a.href     = url;
+    a.href = url;
     a.download = filename + '.webm';
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
-    isRecording = false;
-    if(onComplete) onComplete();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 8000);
+    _isRec = false;
+    if(onDone) onDone();
   };
 
-  mediaRecorder.start(100); // collect data every 100ms
+  // Pull reel data
+  const d   = IDEAS[reelNum - 1];
+  const sd  = {
+    accent  : d.accent   || '#F5A623',
+    cat     : (d.cat||'').toUpperCase(),
+    hook    : d.hook     || '',
+    sub     : "There's a smarter way.",
+    probStmt: d.prob     || '',
+    probBody: d.probBody || '',
+    prompt  : d.prompt   || '',
+    resHl   : d.result   || '',
+    resItems: d.items    || [],
+    ctaKw   : 'Comment PROMPTS',
+    ctaSub  : "and I'll send you my FREE AI Starter Kit."
+  };
 
-  // ── FRAME CAPTURE LOOP ──────────────────────────────────
-  let elapsed    = 0;
-  let sceneIdx   = 0;
-  let sceneStart = 0;
+  // ── Frame pump ──────────────────────────────────────────────
+  const FRAME_MS   = 1000 / EV.FPS;
+  let   elapsed    = 0;
+  let   typedChars = 0;
+  let   lastScene  = -1;
 
-  // Immediately show scene 0
-  showScene(0, true);
+  // Draw one frame right away so the stream has pixels before start()
+  _drawScene(ctx, EV.W, EV.H, 0, 0, sd, 0);
 
-  let lastFrameTime = performance.now();
+  // Small delay so the stream sees the first frame, then start encoder
+  setTimeout(() => {
+    _mr.start(200);  // emit chunks every 200 ms
 
-  function drawFrame(){
-    if(exportCancelled){
-      if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-      isRecording = false;
-      return;
-    }
-
-    const now  = performance.now();
-    const dt   = now - lastFrameTime;
-    lastFrameTime = now;
-    elapsed   += dt;
-
-    // Advance scene based on elapsed time
-    let accum = 0;
-    for(let i=0; i<SCENE_DURATIONS_MS.length; i++){
-      accum += SCENE_DURATIONS_MS[i];
-      if(elapsed < accum){
-        if(i !== sceneIdx){
-          sceneIdx = i;
-          showScene(i, true);
-        }
-        break;
+    const intervalId = setInterval(() => {
+      if(_cancelled){
+        clearInterval(intervalId);
+        if(_mr.state !== 'inactive') _mr.stop();
+        _isRec = false;
+        return;
       }
-    }
 
-    // Update progress bar
-    const pct = Math.min(elapsed / TOTAL_MS * 100, 100);
-    updateBarProgress(pct);
-    setRecStatus(`⏺ Recording ${Math.round(elapsed/1000)}s / 15s`);
+      elapsed += FRAME_MS;
 
-    // Capture phone element to canvas
-    html2canvas(phone, {
-      canvas,
-      scale: 1,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#000',
-      logging: false
-    }).then(()=>{
-      if(elapsed >= TOTAL_MS){
-        // Done — stop recorder
-        if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-        setRecStatus('✓ Processing video...');
+      // Which scene?
+      let sceneIdx = EV.SCENE_MS.length - 1, accum = 0;
+      for(let i = 0; i < EV.SCENE_MS.length; i++){
+        accum += EV.SCENE_MS[i];
+        if(elapsed < accum){ sceneIdx = i; break; }
+      }
+      const sceneStart = EV.SCENE_MS.slice(0, sceneIdx).reduce((a,b)=>a+b, 0);
+      const sceneElapsed = elapsed - sceneStart;
+      const scenePct = Math.min(sceneElapsed / EV.SCENE_MS[sceneIdx], 1);
+
+      // Reset typing counter on scene change
+      if(sceneIdx !== lastScene){ lastScene = sceneIdx; typedChars = 0; }
+
+      // Advance typing on scene 2
+      if(sceneIdx === 2){
+        const target = Math.floor(sceneElapsed / 40);
+        typedChars   = Math.min(target, sd.prompt.length);
+      }
+
+      // Draw
+      _drawScene(ctx, EV.W, EV.H, sceneIdx, scenePct, sd, typedChars);
+
+      // Progress
+      const pct = Math.min(elapsed / EV.TOTAL_MS * 100, 100);
+      updateBarProgress(pct);
+      _setStatus(`⏺ ${Math.round(elapsed/1000)}s / 15s`);
+
+      // Finished?
+      if(elapsed >= EV.TOTAL_MS){
+        clearInterval(intervalId);
+        _setStatus('⏳ Packaging…');
         updateBarProgress(100);
-      } else {
-        // Schedule next frame
-        setTimeout(drawFrame, Math.max(0, FRAME_MS - (performance.now() - now)));
+        setTimeout(() => {
+          if(_mr.state !== 'inactive') _mr.stop();
+        }, 400);
       }
-    }).catch(()=>{
-      // Fallback: still advance
-      if(elapsed >= TOTAL_MS){
-        if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-      } else {
-        setTimeout(drawFrame, FRAME_MS);
-      }
-    });
+
+    }, FRAME_MS);
+
+  }, 120);
+}
+
+// ════════════════════════════════════════════════════════════
+//  SCENE RENDERER
+// ════════════════════════════════════════════════════════════
+function _drawScene(ctx, W, H, sceneIdx, pct, sd, typedChars){
+  switch(sceneIdx){
+    case 0: _scHook   (ctx,W,H,pct,sd); break;
+    case 1: _scProblem(ctx,W,H,pct,sd); break;
+    case 2: _scPrompt (ctx,W,H,pct,sd,typedChars); break;
+    case 3: _scResult (ctx,W,H,pct,sd); break;
+    case 4: _scCTA    (ctx,W,H,pct,sd); break;
+  }
+  _scWatermark(ctx,W,H);
+}
+
+// ── Helpers ───────────────────────────────────────────────────
+function _hex2rgb(h){
+  return { r:parseInt(h.slice(1,3),16), g:parseInt(h.slice(3,5),16), b:parseInt(h.slice(5,7),16) };
+}
+function _rgba(hex,a){ const {r,g,b}=_hex2rgb(hex); return `rgba(${r},${g},${b},${a})`; }
+
+function _bgGrad(ctx,W,H,c1,c2){
+  const g=ctx.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,c1); g.addColorStop(1,c2);
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+}
+
+function _blob(ctx,x,y,r,hex,a){
+  const {r:rr,g,b}=_hex2rgb(hex);
+  const gr=ctx.createRadialGradient(x,y,0,x,y,r);
+  gr.addColorStop(0,`rgba(${rr},${g},${b},${a})`);
+  gr.addColorStop(1,`rgba(${rr},${g},${b},0)`);
+  ctx.save(); ctx.fillStyle=gr;
+  ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); ctx.restore();
+}
+
+function _rr(ctx,x,y,w,h,r,fill,stroke,sw){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r); ctx.closePath();
+  if(fill){ctx.fillStyle=fill; ctx.fill();}
+  if(stroke){ctx.strokeStyle=stroke; ctx.lineWidth=sw||1; ctx.stroke();}
+}
+
+function _wrap(ctx,txt,x,y,maxW,lh){
+  const words=txt.split(' '); let line='', ly=y;
+  for(const w of words){
+    const t=line?line+' '+w:w;
+    if(ctx.measureText(t).width>maxW && line){ ctx.fillText(line,x,ly); line=w; ly+=lh; }
+    else line=t;
+  }
+  ctx.fillText(line,x,ly); return ly+lh;
+}
+
+function _fi(p,speed=3){ return Math.min(p*speed,1); }
+
+function _scWatermark(ctx,W,H){
+  ctx.save();
+  ctx.font='bold 22px Arial,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillStyle='rgba(245,166,35,0.22)'; ctx.fillText('PROMPT',W/2-18,H-32);
+  ctx.fillStyle='rgba(0,212,255,0.22)';  ctx.fillText('AIDER', W/2+28,H-32);
+  ctx.restore();
+}
+
+// ── Scene 0: HOOK ─────────────────────────────────────────────
+function _scHook(ctx,W,H,pct,sd){
+  _bgGrad(ctx,W,H,'#060920','#0E1540');
+  _blob(ctx,-40,-40,300,sd.accent,.20);
+  _blob(ctx,W+40,H*0.6,220,sd.accent,.10);
+
+  const a=_fi(pct);
+  ctx.save(); ctx.globalAlpha=a;
+
+  // Category badge
+  ctx.font='bold 17px Arial,sans-serif';
+  const cw=ctx.measureText(sd.cat).width+28;
+  _rr(ctx,48,142,cw,36,18,_rgba(sd.accent,.18),_rgba(sd.accent,.4),1.5);
+  ctx.fillStyle=sd.accent; ctx.textBaseline='middle'; ctx.textAlign='left';
+  ctx.fillText(sd.cat,62,160);
+
+  // Hook text
+  const hookUC=sd.hook.toUpperCase();
+  const fs=hookUC.length>35?58:hookUC.length>22?68:80;
+  ctx.font=`900 ${fs}px Arial Black,Arial,sans-serif`;
+  ctx.fillStyle='#FFFFFF'; ctx.textBaseline='top';
+  let ly=210, words=hookUC.split(' '), line='';
+  for(const w of words){
+    const t=line?line+' '+w:w;
+    if(ctx.measureText(t).width>W-96 && line){ ctx.fillText(line,48,ly); line=w; ly+=fs*1.1; }
+    else line=t;
+  }
+  ctx.fillText(line,48,ly); ly+=fs*1.1+16;
+
+  // Sub
+  ctx.font='300 28px Arial,sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.38)';
+  ctx.fillText(sd.sub,48,ly);
+
+  // Accent bar
+  ctx.fillStyle=sd.accent; ctx.fillRect(48,H-90,72,4);
+  ctx.restore();
+}
+
+// ── Scene 1: PROBLEM ──────────────────────────────────────────
+function _scProblem(ctx,W,H,pct,sd){
+  _bgGrad(ctx,W,H,'#0A0510','#170922');
+  _blob(ctx,W+40,-40,280,'#FF4757',.18);
+
+  const a=_fi(pct);
+  ctx.save(); ctx.globalAlpha=a;
+  ctx.textAlign='left'; ctx.textBaseline='top';
+
+  // Label
+  ctx.font='bold 17px Arial,sans-serif';
+  ctx.fillStyle='#FF4757';
+  ctx.fillText('THE PROBLEM',48,158);
+
+  // Statement
+  ctx.font='900 italic 52px Arial,sans-serif';
+  ctx.fillStyle='#FFFFFF';
+  let ly=_wrap(ctx,sd.probStmt,48,218,W-96,58); ly+=16;
+
+  // Divider
+  ctx.fillStyle='#FF4757'; ctx.fillRect(48,ly,56,3); ly+=24;
+
+  // Body
+  ctx.font='300 27px Arial,sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  _wrap(ctx,sd.probBody,48,ly+14,W-96,38);
+
+  ctx.restore();
+}
+
+// ── Scene 2: PROMPT ───────────────────────────────────────────
+function _scPrompt(ctx,W,H,pct,sd,typed){
+  _bgGrad(ctx,W,H,'#030C14','#061828');
+  _blob(ctx,W+40,-40,260,'#00D4FF',.14);
+
+  const a=_fi(pct);
+  ctx.save(); ctx.globalAlpha=a;
+
+  // Label
+  ctx.font='bold 17px Arial,sans-serif';
+  ctx.fillStyle='#00D4FF'; ctx.textAlign='left'; ctx.textBaseline='top';
+  ctx.fillText('COPY THIS PROMPT →',48,152);
+
+  // Intro
+  ctx.font='bold 26px Arial,sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.38)';
+  ctx.fillText('Use this instead:',48,188);
+
+  // Terminal box
+  const bx=48,by=230,bw=W-96,bh=H-350;
+  _rr(ctx,bx,by,bw,bh,14,'rgba(0,0,0,0.60)','rgba(0,212,255,0.25)',1.5);
+
+  // Typed text
+  const shown=(sd.prompt||'').slice(0,typed);
+  ctx.font='500 21px monospace';
+  ctx.fillStyle='rgba(0,212,255,0.92)';
+  ctx.textBaseline='top';
+  const rawLines=shown.split('\n');
+  let ty=by+22;
+  for(const rawLine of rawLines){
+    if(!rawLine){ ty+=28; continue; }
+    const ws=rawLine.split(' '); let cur='';
+    for(const w of ws){
+      const t=cur?cur+' '+w:w;
+      if(ctx.measureText(t).width>bw-44 && cur){ ctx.fillText(cur,bx+18,ty); cur=w; ty+=30; }
+      else cur=t;
+    }
+    ctx.fillText(cur,bx+18,ty); ty+=30;
   }
 
-  drawFrame();
+  // Blinking cursor
+  if(typed < (sd.prompt||'').length){
+    const blink=Math.floor(pct*EV.FPS*2)%2===0;
+    if(blink){ ctx.fillStyle='#00D4FF'; ctx.fillRect(bx+20,ty-28,2,22); }
+  }
+
+  // Bottom hint
+  ctx.font='bold 15px Arial,sans-serif';
+  ctx.fillStyle='rgba(0,212,255,0.45)';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('TAP TO COPY + GET INSTAGRAM CAPTION',W/2,by+bh-22);
+
+  ctx.restore();
 }
 
-function stopRecording(){
-  if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-  isRecording = false;
-  const btn = document.getElementById('recBtn');
-  if(btn){ btn.classList.remove('recording'); document.getElementById('recBtnLabel').textContent='Record Reel'; }
-  setRecStatus('');
-  hideExportBar();
+// ── Scene 3: RESULT ───────────────────────────────────────────
+function _scResult(ctx,W,H,pct,sd){
+  _bgGrad(ctx,W,H,'#030A06','#071410');
+  _blob(ctx,-40,-40,280,'#22C55E',.14);
+
+  ctx.save();
+  ctx.textAlign='left'; ctx.textBaseline='top';
+
+  // Label
+  ctx.globalAlpha=Math.min(pct*3,1);
+  ctx.font='bold 17px Arial,sans-serif';
+  ctx.fillStyle='#22C55E';
+  ctx.fillText('THE RESULT',48,152);
+
+  // Headline
+  ctx.globalAlpha=Math.min(pct*2.5,1);
+  const rhl=(sd.resHl||'').toUpperCase();
+  const rf=rhl.length>24?50:60;
+  ctx.font=`900 ${rf}px Arial Black,Arial,sans-serif`;
+  ctx.fillStyle=sd.accent;
+  let ry=210, rw=rhl.split(' '), rl='';
+  for(const w of rw){
+    const t=rl?rl+' '+w:w;
+    if(ctx.measureText(t).width>W-96 && rl){ ctx.fillText(rl,48,ry); rl=w; ry+=rf*1.05; }
+    else rl=t;
+  }
+  ctx.fillText(rl,48,ry); ry+=rf+24;
+
+  // Items — staggered
+  (sd.resItems||[]).forEach((item,i)=>{
+    const ip=Math.min(Math.max((pct-(i*0.15))/.35,0),1);
+    ctx.globalAlpha=ip;
+    const iy=ry+i*78;
+    _rr(ctx,48,iy,W-96,62,10,'rgba(255,255,255,0.03)','rgba(255,255,255,0.07)',1);
+    ctx.fillStyle=sd.accent; ctx.font='bold 26px Arial,sans-serif';
+    ctx.textBaseline='middle'; ctx.fillText('✓',72,iy+31);
+    ctx.font='400 27px Arial,sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.72)';
+    ctx.fillText(item,112,iy+31);
+  });
+
+  ctx.restore();
 }
 
-// ── BATCH EXPORT ──────────────────────────────────────────
+// ── Scene 4: CTA ─────────────────────────────────────────────
+function _scCTA(ctx,W,H,pct,sd){
+  _bgGrad(ctx,W,H,'#080414','#160928');
+  _blob(ctx,W+40,-40,280,sd.accent,.20);
+  _blob(ctx,-40,H*.7,200,'#A855F7',.12);
+
+  const a=_fi(pct);
+  ctx.save(); ctx.globalAlpha=a;
+  ctx.textAlign='left'; ctx.textBaseline='top';
+
+  // Label
+  ctx.font='bold 17px Arial,sans-serif';
+  ctx.fillStyle=sd.accent;
+  ctx.fillText('GET THE FREE KIT →',48,152);
+
+  // Headline
+  ctx.font='900 76px Arial Black,Arial,sans-serif';
+  ctx.fillStyle='#FFFFFF';
+  ctx.fillText('WANT MORE',48,202);
+  ctx.fillText('PROMPTS?',48,276);
+
+  // CTA box
+  const bx=48,by=376,bw=W-96,bh=168;
+  _rr(ctx,bx,by,bw,bh,16,_rgba(sd.accent,.13),_rgba(sd.accent,.40),2);
+
+  // Keyword
+  ctx.font='900 66px Arial Black,Arial,sans-serif';
+  ctx.fillStyle=sd.accent; ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText(sd.ctaKw,W/2,by+22);
+
+  // Sub
+  ctx.font='300 24px Arial,sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.48)';
+  ctx.textBaseline='middle';
+  ctx.fillText(sd.ctaSub,W/2,by+108);
+
+  ctx.restore();
+}
+
+// ── Cancel / stop ─────────────────────────────────────────────
+function stopRecording(){ _cancelExport(); }
+function _cancelExport(){
+  _cancelled    = true;
+  _batchRunning = false;
+  if(_mr && _mr.state !== 'inactive') _mr.stop();
+  _isRec = false;
+  _recBtnIdle();
+  const b2=document.getElementById('batchBtn');
+  if(b2) b2.classList.remove('running');
+  _setStatus(''); hideExportBar();
+}
+function cancelExport(){ _cancelExport(); }
+
+function _recBtnIdle(){
+  const btn=document.getElementById('recBtn');
+  if(btn){ btn.classList.remove('recording');
+           document.getElementById('recBtnLabel').textContent='⏺ Record Reel'; }
+}
+
+// ── Batch ─────────────────────────────────────────────────────
 function openBatchModal(){
-  updateBatchQueuePreview();
+  _updateBatchPreview();
   document.getElementById('batchModal').style.display='flex';
-  document.getElementById('batchFrom').oninput = updateBatchQueuePreview;
-  document.getElementById('batchTo').oninput   = updateBatchQueuePreview;
+  document.getElementById('batchFrom').oninput=_updateBatchPreview;
+  document.getElementById('batchTo').oninput=_updateBatchPreview;
 }
+function closeBatchModal(){ document.getElementById('batchModal').style.display='none'; }
 
-function closeBatchModal(){
-  document.getElementById('batchModal').style.display='none';
-}
-
-function updateBatchQueuePreview(){
-  const from = parseInt(document.getElementById('batchFrom').value)||1;
-  const to   = Math.min(parseInt(document.getElementById('batchTo').value)||5, 100);
-  const el   = document.getElementById('batchQueuePreview');
-  if(to < from){ el.textContent='⚠ End reel must be ≥ start reel'; return; }
-  const count = to - from + 1;
-  let lines = [];
-  for(let i=from; i<=Math.min(to, from+9); i++){
-    const d = IDEAS[i-1];
-    lines.push(`${String(i).padStart(2,'0')} — ${d.hook.substring(0,40)}...`);
-  }
-  if(count > 10) lines.push(`... and ${count-10} more reels`);
-  el.innerHTML = lines.join('<br>');
-  el.insertAdjacentHTML('afterbegin',`<span style="color:var(--amber);font-weight:700;">${count} reels queued · ~${count*15}s total recording<br><br></span>`);
+function _updateBatchPreview(){
+  const from=parseInt(document.getElementById('batchFrom').value)||1;
+  const to  =Math.min(parseInt(document.getElementById('batchTo').value)||5,100);
+  const el  =document.getElementById('batchQueuePreview');
+  if(to<from){ el.textContent='⚠ End must be ≥ start'; return; }
+  const count=to-from+1;
+  let lines=[];
+  for(let i=from;i<=Math.min(to,from+7);i++)
+    lines.push(`${String(i).padStart(2,'0')} — ${IDEAS[i-1].hook.slice(0,40)}`);
+  if(count>8) lines.push(`…and ${count-8} more`);
+  el.innerHTML=`<span style="color:var(--amber);font-weight:700;">${count} reels · ~${count*15}s<br><br></span>`+lines.join('<br>');
 }
 
 async function startBatchExport(){
-  const from = parseInt(document.getElementById('batchFrom').value)||1;
-  const to   = Math.min(parseInt(document.getElementById('batchTo').value)||5, 100);
-  if(to < from){ alert('End reel must be ≥ start reel'); return; }
-
+  const from=parseInt(document.getElementById('batchFrom').value)||1;
+  const to  =Math.min(parseInt(document.getElementById('batchTo').value)||5,100);
+  if(to<from){ alert('End reel must be ≥ start'); return; }
   closeBatchModal();
-  exportCancelled = false;
-  batchRunning    = true;
-
-  const btn = document.getElementById('batchBtn');
+  _cancelled=false; _batchRunning=true;
+  const btn=document.getElementById('batchBtn');
   if(btn) btn.classList.add('running');
-
-  const total = to - from + 1;
-
-  for(let i=from; i<=to; i++){
-    if(exportCancelled) break;
-
-    const reelNum  = i;
-    const filename = `promptaider_reel${String(reelNum).padStart(3,'0')}`;
-    const batchPct = ((i - from) / total) * 100;
-
-    showExportBar(
-      `BATCH ${i-from+1}/${total}`,
-      `Recording Reel ${String(reelNum).padStart(2,'0')} — ${IDEAS[reelNum-1].cat}`,
-      batchPct
-    );
+  const total=to-from+1;
+  for(let i=from;i<=to;i++){
+    if(_cancelled) break;
+    showExportBar(`BATCH ${i-from+1}/${total}`,
+      `Reel ${String(i).padStart(2,'0')} — ${IDEAS[i-1].cat}`,
+      ((i-from)/total)*100);
     document.getElementById('barRecDot').style.display='block';
-
-    // Record this reel and wait for it to finish
-    await new Promise(resolve => {
-      startVideoRecording(reelNum, filename, resolve);
-    });
-
-    // Brief pause between recordings
-    if(!exportCancelled) await sleep(800);
+    await new Promise(res=>_doRecord(i,`promptaider_reel${String(i).padStart(3,'0')}`,res));
+    if(!_cancelled) await new Promise(r=>setTimeout(r,600));
   }
-
-  batchRunning = false;
+  _batchRunning=false;
   if(btn) btn.classList.remove('running');
-
-  if(!exportCancelled){
-    showExportBar('BATCH DONE', `${total} videos downloaded ✓`, 100);
-    document.getElementById('barRecDot').style.display='none';
+  if(!_cancelled){
+    document.getElementById('barTitle').textContent='BATCH DONE';
     document.getElementById('barTitle').style.color='var(--green)';
-    setTimeout(hideExportBar, 4000);
+    document.getElementById('barStatus').textContent=`${total} videos downloaded ✓`;
+    document.getElementById('barProgFill').style.width='100%';
+    document.getElementById('barRecDot').style.display='none';
+    setTimeout(hideExportBar,4000);
   }
-}
-
-function cancelExport(){
-  exportCancelled = true;
-  batchRunning    = false;
-  if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-  isRecording = false;
-  const recBtn = document.getElementById('recBtn');
-  if(recBtn){ recBtn.classList.remove('recording'); document.getElementById('recBtnLabel').textContent='Record Reel'; }
-  const batchBtn = document.getElementById('batchBtn');
-  if(batchBtn) batchBtn.classList.remove('running');
-  setRecStatus('');
-  hideExportBar();
 }
 
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-// ── EXPORT BAR HELPERS ────────────────────────────────────
-function showExportBar(title, status, pct){
-  const bar = document.getElementById('exportBar');
-  bar.classList.add('show');
-  document.getElementById('barTitle').textContent  = title;
-  document.getElementById('barTitle').style.color  = 'var(--amber)';
-  document.getElementById('barStatus').textContent = status;
-  document.getElementById('barProgFill').style.width = pct+'%';
+// ── Export bar helpers ────────────────────────────────────────
+function showExportBar(title,status,pct){
+  const bar=document.getElementById('exportBar'); bar.classList.add('show');
+  document.getElementById('barTitle').textContent=title;
+  document.getElementById('barTitle').style.color='var(--amber)';
+  document.getElementById('barStatus').textContent=status;
+  document.getElementById('barProgFill').style.width=pct+'%';
 }
+function hideExportBar(){ document.getElementById('exportBar').classList.remove('show'); }
+function updateBarProgress(pct){ document.getElementById('barProgFill').style.width=pct+'%'; }
+function _setStatus(msg){ const el=document.getElementById('recStatus'); if(el) el.textContent=msg; }
+function setRecStatus(msg){ _setStatus(msg); }
 
-function hideExportBar(){
-  document.getElementById('exportBar').classList.remove('show');
-}
-
-function updateBarProgress(pct){
-  document.getElementById('barProgFill').style.width = pct+'%';
-}
-
-function setRecStatus(msg){
-  const el = document.getElementById('recStatus');
-  if(el) el.textContent = msg;
-}
 
 /* ══ EXPORT SCENES as PNG (original Studio 3 function, kept) ══ */
 function exportScenes(){
