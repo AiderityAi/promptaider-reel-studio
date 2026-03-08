@@ -331,6 +331,65 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
 @keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
+
+/* ══ VIDEO EXPORT ══ */
+.export-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:500;
+  background:rgba(2,3,10,.97);border-top:1px solid rgba(245,166,35,.25);
+  padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  backdrop-filter:blur(20px);transform:translateY(100%);transition:transform .3s ease;
+}
+.export-bar.show{transform:translateY(0);}
+.eb-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--amber);flex-shrink:0;}
+.eb-status{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.4);flex:1;min-width:160px;}
+.eb-prog{flex:1;min-width:120px;height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;}
+.eb-prog-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--cyan));border-radius:2px;width:0%;transition:width .3s;}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;animation:recPulse 1s ease-in-out infinite;}
+@keyframes recPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+/* video export buttons in preview panel */
+.vid-export-row{display:flex;gap:5px;width:100%;flex-wrap:wrap;}
+.veb{
+  flex:1;padding:8px 6px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;cursor:pointer;border:none;transition:all .2s;
+  font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.veb-rec{background:rgba(255,71,87,.15);border:1px solid rgba(255,71,87,.35);color:var(--red);}
+.veb-rec:hover{background:rgba(255,71,87,.25);}
+.veb-rec.recording{background:rgba(255,71,87,.25);border-color:var(--red);animation:recBorder 1s ease-in-out infinite;}
+@keyframes recBorder{0%,100%{border-color:rgba(255,71,87,.35)}50%{border-color:var(--red)}}
+.veb-batch{background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);color:var(--amber);}
+.veb-batch:hover{background:rgba(245,166,35,.2);}
+.veb-batch.running{opacity:.6;cursor:not-allowed;}
+.veb-png{background:var(--glass);border:1px solid var(--border);color:rgba(255,255,255,.35);}
+.veb-png:hover{border-color:rgba(255,255,255,.2);color:#fff;}
+
+/* Batch modal */
+.batch-modal{
+  position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.batch-box{
+  background:#070C1E;border:1px solid rgba(245,166,35,.3);border-radius:14px;
+  width:100%;max-width:480px;padding:24px;
+  box-shadow:0 0 60px rgba(245,166,35,.1);
+}
+.bb-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--amber);margin-bottom:4px;}
+.bb-sub{font-size:9px;color:rgba(255,255,255,.2);letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:16px;}
+.bb-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bb-label{font-size:11px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;min-width:90px;}
+.bb-input{
+  flex:1;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:5px;
+  color:#e2e8f0;font-family:'DM Mono',monospace;font-size:11px;padding:7px 10px;outline:none;
+}
+.bb-input:focus{border-color:rgba(245,166,35,.4);}
+.bb-queue{
+  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:6px;
+  padding:10px;max-height:120px;overflow-y:auto;font-family:'DM Mono',monospace;
+  font-size:10px;color:rgba(255,255,255,.4);line-height:1.9;margin-bottom:14px;
+}
+.bb-actions{display:flex;gap:8px;}
+
 /* scrollbars */
 ::-webkit-scrollbar{width:2px;height:2px;}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);}
@@ -546,14 +605,35 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
     <button class="sj" id="sj4" onclick="jumpTo(4)">CTA</button>
   </div>
 
-  <button onclick="openCopyModal()" style="
-    width:100%;padding:9px;border-radius:6px;
-    background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);
-    color:#00D4FF;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;
-    letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;
-  " onmouseover="this.style.background='rgba(0,212,255,.18)'" onmouseout="this.style.background='rgba(0,212,255,.1)'">
-    📋 Copy Prompt + Get Instagram Caption
-  </button>
+  <!-- Video Export Row -->
+  <div style="width:100%">
+    <div class="p-label" style="margin-bottom:6px;">Export as Video</div>
+    <div class="vid-export-row">
+      <button class="veb veb-rec" id="recBtn" onclick="recordCurrentReel()">
+        <span id="recBtnDot" style="width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;"></span>
+        <span id="recBtnLabel">Record Reel</span>
+      </button>
+      <button class="veb veb-batch" id="batchBtn" onclick="openBatchModal()">⚡ Batch Export</button>
+    </div>
+    <div class="vid-export-row" style="margin-top:5px;">
+      <button onclick="openCopyModal()" style="
+        flex:1;padding:7px;border-radius:5px;
+        background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);
+        color:#00D4FF;font-family:'DM Mono',monospace;font-size:8px;font-weight:700;
+        letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+      ">📋 Copy Prompt + Caption</button>
+      <button onclick="exportScenes()" style="
+        padding:7px 10px;border-radius:5px;
+        background:var(--glass);border:1px solid var(--border);
+        color:rgba(255,255,255,.3);font-family:'DM Mono',monospace;font-size:8px;font-weight:700;
+        letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+      ">🖼 PNG Scenes</button>
+    </div>
+    <div id="recStatus" style="
+      font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.2);
+      text-align:center;margin-top:6px;min-height:14px;letter-spacing:1px;
+    "></div>
+  </div>
 
   <div class="playback">
     <button class="plbtn" onclick="jumpTo((curScene+4)%5)">⟨</button>
@@ -582,6 +662,54 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
 </div>
 
 </div><!-- /main -->
+
+<!-- ══ EXPORT STATUS BAR ══ -->
+<div class="export-bar" id="exportBar">
+  <div class="rec-dot" id="barRecDot" style="display:none;"></div>
+  <div class="eb-title" id="barTitle">RECORDING</div>
+  <div class="eb-status" id="barStatus">Preparing...</div>
+  <div class="eb-prog"><div class="eb-prog-fill" id="barProgFill"></div></div>
+  <button onclick="cancelExport()" style="
+    padding:5px 12px;border-radius:4px;background:rgba(255,71,87,.12);
+    border:1px solid rgba(255,71,87,.3);color:var(--red);
+    font-family:'DM Mono',monospace;font-size:8px;font-weight:700;
+    letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;flex-shrink:0;
+  ">✕ Cancel</button>
+</div>
+
+<!-- ══ BATCH MODAL ══ -->
+<div class="batch-modal" id="batchModal" style="display:none;">
+  <div class="batch-box">
+    <div class="bb-title">Batch Video Export</div>
+    <div class="bb-sub">Record multiple reels as WebM video files</div>
+    <div class="bb-row">
+      <div class="bb-label">From reel</div>
+      <input class="bb-input" id="batchFrom" type="number" min="1" max="100" value="1">
+    </div>
+    <div class="bb-row">
+      <div class="bb-label">To reel</div>
+      <input class="bb-input" id="batchTo" type="number" min="1" max="100" value="5">
+    </div>
+    <div class="bb-row">
+      <div class="bb-label">Format</div>
+      <select class="bb-input" id="batchFormat">
+        <option value="webm">WebM (recommended — direct upload to Instagram)</option>
+        <option value="webm-hq">WebM HQ (larger file, higher quality)</option>
+      </select>
+    </div>
+    <div class="bb-queue" id="batchQueuePreview">
+      Select range above — queue will appear here
+    </div>
+    <div class="bb-actions">
+      <button onclick="startBatchExport()" class="btn btn-a" style="flex:1;padding:10px;">
+        ⚡ Start Batch Export
+      </button>
+      <button onclick="closeBatchModal()" class="btn btn-ghost" style="padding:10px 16px;">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ══════════ ALL 50 IDEAS ══════════ */
@@ -1839,7 +1967,292 @@ function showGenOut(text){
   document.getElementById('tagOut').classList.remove('show');
 }
 
-/* ══ EXPORT SCENES (Studio 3 function) ══ */
+/* ══════════════════════════════════════════════
+   VIDEO RECORDING ENGINE
+   Uses MediaRecorder + html2canvas to capture
+   the phone preview as a real WebM video file
+   ══════════════════════════════════════════════ */
+
+let mediaRecorder = null;
+let recordedChunks = [];
+let isRecording = false;
+let batchQueue = [];
+let batchRunning = false;
+let exportCancelled = false;
+
+// ── RECORD SINGLE REEL ────────────────────────────────────
+function recordCurrentReel(){
+  if(isRecording){ stopRecording(); return; }
+  const reelNum = curReel;
+  const reelName = `promptaider_reel${String(reelNum).padStart(3,'0')}`;
+  startVideoRecording(reelNum, reelName, ()=>{
+    setRecStatus('');
+    const btn = document.getElementById('recBtn');
+    if(btn){ btn.classList.remove('recording'); document.getElementById('recBtnLabel').textContent='Record Reel'; }
+    hideExportBar();
+  });
+}
+
+// ── CORE RECORDING FUNCTION ───────────────────────────────
+function startVideoRecording(reelNum, filename, onComplete){
+  if(isRecording) return;
+  exportCancelled = false;
+  isRecording = true;
+
+  // UI feedback
+  const btn = document.getElementById('recBtn');
+  if(btn){ btn.classList.add('recording'); document.getElementById('recBtnLabel').textContent='⏹ Stop'; }
+  setRecStatus('⏺ Recording...');
+  showExportBar('RECORDING', `Reel ${String(reelNum).padStart(2,'0')} — ${IDEAS[reelNum-1].cat}`, 0);
+  document.getElementById('barRecDot').style.display='block';
+
+  // Load the reel first
+  loadReel(reelNum);
+
+  // Give DOM a moment to render, then start recording
+  setTimeout(()=>{
+    if(exportCancelled){ isRecording=false; return; }
+    captureVideoFromPhone(filename, onComplete);
+  }, 400);
+}
+
+// ── CANVAS → MEDIARECORDER PIPELINE ──────────────────────
+function captureVideoFromPhone(filename, onComplete){
+  const phone = document.getElementById('phoneEl');
+  const SCENE_DURATIONS_MS = [2000, 2000, 5000, 3000, 3000];
+  const TOTAL_MS = SCENE_DURATIONS_MS.reduce((a,b)=>a+b, 0); // 15000ms
+  const FPS = 24;
+  const FRAME_MS = 1000 / FPS;
+
+  // Create offscreen canvas at phone size
+  const W = phone.offsetWidth  || 240;
+  const H = phone.offsetHeight || 426;
+  const canvas = document.createElement('canvas');
+  canvas.width  = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Set up MediaRecorder on the canvas stream
+  const stream = canvas.captureStream(FPS);
+  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+    ? 'video/webm;codecs=vp9'
+    : MediaRecorder.isTypeSupported('video/webm;codecs=vp8')
+    ? 'video/webm;codecs=vp8'
+    : 'video/webm';
+
+  recordedChunks = [];
+  mediaRecorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 4000000 });
+  mediaRecorder.ondataavailable = e => { if(e.data.size>0) recordedChunks.push(e.data); };
+  mediaRecorder.onstop = ()=>{
+    if(exportCancelled){ isRecording=false; return; }
+    const blob = new Blob(recordedChunks, { type: mimeType });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = filename + '.webm';
+    a.click();
+    URL.revokeObjectURL(url);
+    isRecording = false;
+    if(onComplete) onComplete();
+  };
+
+  mediaRecorder.start(100); // collect data every 100ms
+
+  // ── FRAME CAPTURE LOOP ──────────────────────────────────
+  let elapsed    = 0;
+  let sceneIdx   = 0;
+  let sceneStart = 0;
+
+  // Immediately show scene 0
+  showScene(0, true);
+
+  let lastFrameTime = performance.now();
+
+  function drawFrame(){
+    if(exportCancelled){
+      if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      isRecording = false;
+      return;
+    }
+
+    const now  = performance.now();
+    const dt   = now - lastFrameTime;
+    lastFrameTime = now;
+    elapsed   += dt;
+
+    // Advance scene based on elapsed time
+    let accum = 0;
+    for(let i=0; i<SCENE_DURATIONS_MS.length; i++){
+      accum += SCENE_DURATIONS_MS[i];
+      if(elapsed < accum){
+        if(i !== sceneIdx){
+          sceneIdx = i;
+          showScene(i, true);
+        }
+        break;
+      }
+    }
+
+    // Update progress bar
+    const pct = Math.min(elapsed / TOTAL_MS * 100, 100);
+    updateBarProgress(pct);
+    setRecStatus(`⏺ Recording ${Math.round(elapsed/1000)}s / 15s`);
+
+    // Capture phone element to canvas
+    html2canvas(phone, {
+      canvas,
+      scale: 1,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#000',
+      logging: false
+    }).then(()=>{
+      if(elapsed >= TOTAL_MS){
+        // Done — stop recorder
+        if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+        setRecStatus('✓ Processing video...');
+        updateBarProgress(100);
+      } else {
+        // Schedule next frame
+        setTimeout(drawFrame, Math.max(0, FRAME_MS - (performance.now() - now)));
+      }
+    }).catch(()=>{
+      // Fallback: still advance
+      if(elapsed >= TOTAL_MS){
+        if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      } else {
+        setTimeout(drawFrame, FRAME_MS);
+      }
+    });
+  }
+
+  drawFrame();
+}
+
+function stopRecording(){
+  if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  isRecording = false;
+  const btn = document.getElementById('recBtn');
+  if(btn){ btn.classList.remove('recording'); document.getElementById('recBtnLabel').textContent='Record Reel'; }
+  setRecStatus('');
+  hideExportBar();
+}
+
+// ── BATCH EXPORT ──────────────────────────────────────────
+function openBatchModal(){
+  updateBatchQueuePreview();
+  document.getElementById('batchModal').style.display='flex';
+  document.getElementById('batchFrom').oninput = updateBatchQueuePreview;
+  document.getElementById('batchTo').oninput   = updateBatchQueuePreview;
+}
+
+function closeBatchModal(){
+  document.getElementById('batchModal').style.display='none';
+}
+
+function updateBatchQueuePreview(){
+  const from = parseInt(document.getElementById('batchFrom').value)||1;
+  const to   = Math.min(parseInt(document.getElementById('batchTo').value)||5, 100);
+  const el   = document.getElementById('batchQueuePreview');
+  if(to < from){ el.textContent='⚠ End reel must be ≥ start reel'; return; }
+  const count = to - from + 1;
+  let lines = [];
+  for(let i=from; i<=Math.min(to, from+9); i++){
+    const d = IDEAS[i-1];
+    lines.push(`${String(i).padStart(2,'0')} — ${d.hook.substring(0,40)}...`);
+  }
+  if(count > 10) lines.push(`... and ${count-10} more reels`);
+  el.innerHTML = lines.join('<br>');
+  el.insertAdjacentHTML('afterbegin',`<span style="color:var(--amber);font-weight:700;">${count} reels queued · ~${count*15}s total recording<br><br></span>`);
+}
+
+async function startBatchExport(){
+  const from = parseInt(document.getElementById('batchFrom').value)||1;
+  const to   = Math.min(parseInt(document.getElementById('batchTo').value)||5, 100);
+  if(to < from){ alert('End reel must be ≥ start reel'); return; }
+
+  closeBatchModal();
+  exportCancelled = false;
+  batchRunning    = true;
+
+  const btn = document.getElementById('batchBtn');
+  if(btn) btn.classList.add('running');
+
+  const total = to - from + 1;
+
+  for(let i=from; i<=to; i++){
+    if(exportCancelled) break;
+
+    const reelNum  = i;
+    const filename = `promptaider_reel${String(reelNum).padStart(3,'0')}`;
+    const batchPct = ((i - from) / total) * 100;
+
+    showExportBar(
+      `BATCH ${i-from+1}/${total}`,
+      `Recording Reel ${String(reelNum).padStart(2,'0')} — ${IDEAS[reelNum-1].cat}`,
+      batchPct
+    );
+    document.getElementById('barRecDot').style.display='block';
+
+    // Record this reel and wait for it to finish
+    await new Promise(resolve => {
+      startVideoRecording(reelNum, filename, resolve);
+    });
+
+    // Brief pause between recordings
+    if(!exportCancelled) await sleep(800);
+  }
+
+  batchRunning = false;
+  if(btn) btn.classList.remove('running');
+
+  if(!exportCancelled){
+    showExportBar('BATCH DONE', `${total} videos downloaded ✓`, 100);
+    document.getElementById('barRecDot').style.display='none';
+    document.getElementById('barTitle').style.color='var(--green)';
+    setTimeout(hideExportBar, 4000);
+  }
+}
+
+function cancelExport(){
+  exportCancelled = true;
+  batchRunning    = false;
+  if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  isRecording = false;
+  const recBtn = document.getElementById('recBtn');
+  if(recBtn){ recBtn.classList.remove('recording'); document.getElementById('recBtnLabel').textContent='Record Reel'; }
+  const batchBtn = document.getElementById('batchBtn');
+  if(batchBtn) batchBtn.classList.remove('running');
+  setRecStatus('');
+  hideExportBar();
+}
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+// ── EXPORT BAR HELPERS ────────────────────────────────────
+function showExportBar(title, status, pct){
+  const bar = document.getElementById('exportBar');
+  bar.classList.add('show');
+  document.getElementById('barTitle').textContent  = title;
+  document.getElementById('barTitle').style.color  = 'var(--amber)';
+  document.getElementById('barStatus').textContent = status;
+  document.getElementById('barProgFill').style.width = pct+'%';
+}
+
+function hideExportBar(){
+  document.getElementById('exportBar').classList.remove('show');
+}
+
+function updateBarProgress(pct){
+  document.getElementById('barProgFill').style.width = pct+'%';
+}
+
+function setRecStatus(msg){
+  const el = document.getElementById('recStatus');
+  if(el) el.textContent = msg;
+}
+
+/* ══ EXPORT SCENES as PNG (original Studio 3 function, kept) ══ */
 function exportScenes(){
   const scenes=['sc0','sc1','sc2','sc3','sc4'];
   let idx=0;
