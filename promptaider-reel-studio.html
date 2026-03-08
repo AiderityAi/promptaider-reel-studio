@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromptAider Reel Studio 4.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&display=swap" rel="stylesheet">
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<style>
+:root{
+  --amber:#F5A623; --cyan:#00D4FF; --purple:#A855F7;
+  --red:#FF4757; --green:#22C55E; --navy:#020817;
+  --panel:#040C1C; --border:rgba(255,255,255,.07);
+  --glass:rgba(255,255,255,.04);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;display:flex;flex-direction:column;}
+
+/* ══ TOP BAR ══ */
+.topbar{
+  height:48px;background:rgba(2,3,10,.97);border-bottom:1px solid rgba(245,166,35,.2);
+  display:flex;align-items:center;justify-content:space-between;padding:0 20px;
+  flex-shrink:0;z-index:100;
+}
+.wordmark{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;display:flex;align-items:baseline;}
+.wordmark .a{color:var(--amber);}.wordmark .b{color:var(--cyan);}
+.wordmark em{font-style:normal;font-size:8px;color:rgba(255,255,255,.2);letter-spacing:4px;margin-left:10px;font-family:'DM Mono',monospace;}
+.topbar-pills{display:flex;gap:6px;align-items:center;}
+.pill{padding:3px 10px;border-radius:20px;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;}
+.pill-a{background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);color:var(--amber);}
+.pill-c{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);color:var(--cyan);}
+.pill-g{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:var(--green);}
+
+/* ══ MAIN 3-COL ══ */
+.main{display:grid;grid-template-columns:300px 1fr 310px;height:calc(100vh - 48px);overflow:hidden;}
+
+/* ══ COL 1: LIBRARY ══ */
+.lib{display:flex;flex-direction:column;background:var(--panel);border-right:1px solid var(--border);overflow:hidden;}
+.lib-head{padding:12px 14px 8px;flex-shrink:0;border-bottom:1px solid var(--border);}
+.sec-label{font-size:8px;color:rgba(255,255,255,.2);letter-spacing:4px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:8px;}
+.search{
+  width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.07);
+  border-radius:5px;padding:7px 10px;color:#e2e8f0;font-family:'DM Mono',monospace;
+  font-size:11px;outline:none;transition:border-color .2s;
+}
+.search:focus{border-color:rgba(0,212,255,.3);}
+.search::placeholder{color:rgba(255,255,255,.15);}
+/* Category tabs */
+.cat-strip{display:flex;gap:3px;padding:8px 14px;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;}
+.cat-strip::-webkit-scrollbar{height:2px;}
+.cat-strip::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);}
+.ctab{
+  padding:4px 9px;border-radius:3px;font-size:8px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;cursor:pointer;border:1px solid rgba(255,255,255,.07);
+  background:var(--glass);color:rgba(255,255,255,.25);transition:all .2s;
+  font-family:'DM Mono',monospace;white-space:nowrap;flex-shrink:0;
+}
+.ctab.on{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--cyan);}
+/* Idea rows */
+.idea-scroll{flex:1;overflow-y:auto;}
+.idea-scroll::-webkit-scrollbar{width:2px;}
+.idea-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);}
+.irow{
+  padding:9px 14px;display:flex;align-items:flex-start;gap:8px;cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,.025);transition:background .15s;
+}
+.irow:hover{background:rgba(255,255,255,.035);}
+.irow.loaded{background:rgba(245,166,35,.06);border-left:2px solid var(--amber);}
+.irow.done{opacity:.45;}
+.ir-n{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.2);width:18px;flex-shrink:0;margin-top:1px;}
+.ir-body{flex:1;min-width:0;}
+.ir-hook{font-size:11px;font-weight:700;color:rgba(255,255,255,.7);line-height:1.3;margin-bottom:3px;}
+.ir-cat{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;padding:1px 5px;border-radius:2px;}
+.ir-tick{font-size:11px;flex-shrink:0;}
+/* Lib stats footer */
+.lib-foot{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:12px;flex-shrink:0;}
+.lfs{text-align:center;}
+.lfs-n{font-family:'Bebas Neue',sans-serif;font-size:22px;}
+.lfs-l{font-size:7px;color:rgba(255,255,255,.2);letter-spacing:2px;font-family:'DM Mono',monospace;text-transform:uppercase;}
+
+/* ══ COL 2: EDITOR ══ */
+.editor{overflow-y:auto;padding:16px 20px 60px;background:var(--navy);}
+.editor::-webkit-scrollbar{width:3px;}
+.editor::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);}
+.e-title{font-size:8px;color:rgba(255,255,255,.2);letter-spacing:4px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.e-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* Reel grid */
+.rgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;margin-bottom:16px;}
+.rb{
+  padding:5px 2px;text-align:center;font-size:9px;font-weight:700;
+  border:1px solid var(--border);background:var(--glass);color:rgba(255,255,255,.25);
+  cursor:pointer;border-radius:3px;transition:all .15s;font-family:'DM Mono',monospace;
+  position:relative;
+}
+.rb:hover{border-color:rgba(245,166,35,.3);color:rgba(245,166,35,.7);}
+.rb.active{background:rgba(245,166,35,.15);border-color:var(--amber);color:var(--amber);}
+.rb.done{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.2);color:rgba(34,197,94,.6);}
+.rb.done::after{content:'✓';font-size:6px;display:block;color:var(--green);}
+
+/* Progress */
+.prog-card{background:var(--glass);border:1px solid var(--border);border-radius:7px;padding:12px 14px;margin-bottom:14px;}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.prog-bar{height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--cyan));border-radius:2px;transition:width .5s;}
+.prog-nums{display:flex;gap:14px;margin-top:8px;}
+.pn{}.pn-v{font-family:'Bebas Neue',sans-serif;font-size:22px;}.pn-l{font-size:7px;color:rgba(255,255,255,.2);font-family:'DM Mono',monospace;letter-spacing:2px;}
+
+/* Pattern + Accent row */
+.flex-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center;}
+.pbtn{
+  padding:4px 10px;border-radius:3px;font-size:8px;font-weight:700;letter-spacing:1px;
+  border:1px solid var(--border);background:var(--glass);color:rgba(255,255,255,.3);
+  cursor:pointer;transition:all .2s;font-family:'DM Mono',monospace;text-transform:uppercase;
+}
+.pbtn.sel{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--cyan);}
+.swatch{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;flex-shrink:0;}
+.swatch.sel{border-color:#fff;transform:scale(1.2);}
+
+/* Scene blocks */
+.sblock{margin-bottom:10px;border-radius:7px;overflow:hidden;border:1px solid var(--border);}
+.shdr{padding:8px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;background:rgba(0,0,0,.25);user-select:none;}
+.sn{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;flex-shrink:0;font-family:'DM Mono',monospace;}
+.sname{font-size:11px;font-weight:700;flex:1;letter-spacing:.3px;}
+.stiming{font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,.2);}
+.schev{color:rgba(255,255,255,.2);font-size:9px;transition:transform .2s;}
+.sopen .schev{transform:rotate(180deg);}
+.sbody{padding:10px 12px 12px;background:rgba(0,0,0,.15);}
+.fl{font-size:8px;color:rgba(255,255,255,.2);letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:5px;}
+.fi,.fta{
+  width:100%;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.06);
+  border-radius:4px;color:#e2e8f0;font-family:'DM Mono',monospace;font-size:11px;
+  line-height:1.7;padding:7px 10px;resize:none;outline:none;transition:border-color .2s;
+}
+.fi:focus,.fta:focus{border-color:rgba(0,212,255,.3);}
+.fi::placeholder,.fta::placeholder{color:rgba(255,255,255,.12);}
+.mt6{margin-top:6px;} .mt10{margin-top:10px;}
+
+/* CTA chips */
+.chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;}
+.chip{
+  padding:3px 9px;border-radius:20px;font-size:8px;font-weight:700;
+  border:1px solid var(--border);background:var(--glass);color:rgba(255,255,255,.3);
+  cursor:pointer;transition:all .2s;font-family:'DM Mono',monospace;letter-spacing:1px;
+}
+.chip.sel{background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.4);color:var(--amber);}
+
+/* Action row */
+.act-row{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;}
+.btn{
+  padding:9px 14px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;cursor:pointer;border:none;transition:all .2s;
+  font-family:'Barlow Condensed',sans-serif;
+}
+.btn-a{background:linear-gradient(135deg,var(--amber),#df840a);color:#000;}
+.btn-a:hover{filter:brightness(1.1);}
+.btn-c{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);color:var(--cyan);}
+.btn-c:hover{background:rgba(0,212,255,.18);}
+.btn-g{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:var(--green);}
+.btn-g:hover{background:rgba(34,197,94,.18);}
+.btn-ghost{background:var(--glass);border:1px solid var(--border);color:rgba(255,255,255,.4);}
+.btn-ghost:hover{border-color:rgba(255,255,255,.2);color:#fff;}
+
+/* ── GENERATORS SECTION ── */
+.gen-section{margin-top:16px;}
+.gen-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;}
+.gen-output{
+  background:rgba(0,0,0,.4);border:1px solid rgba(0,212,255,.15);border-radius:6px;
+  padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;color:rgba(0,212,255,.8);
+  line-height:1.7;min-height:40px;display:none;margin-top:8px;white-space:pre-wrap;
+}
+.gen-output.show{display:block;}
+.hashtag-out{
+  background:rgba(0,0,0,.4);border:1px solid rgba(168,85,247,.15);border-radius:6px;
+  padding:10px 12px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(168,85,247,.8);
+  line-height:1.8;display:none;margin-top:8px;
+}
+.hashtag-out.show{display:block;}
+
+/* ══ COL 3: PHONE PREVIEW ══ */
+.preview-col{
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  gap:12px;padding:16px 16px 40px;background:#010208;overflow-y:auto;
+}
+.preview-col::-webkit-scrollbar{width:2px;}
+.p-label{font-size:8px;color:rgba(255,255,255,.15);letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;}
+
+/* ── PHONE ── */
+.phone-wrap{position:relative;}
+.phone{
+  width:240px;height:426px;border-radius:32px;position:relative;overflow:hidden;
+  background:#000;flex-shrink:0;
+  box-shadow:0 0 0 1px rgba(255,255,255,.1),0 0 0 8px #111,0 0 0 9px rgba(255,255,255,.07),0 25px 50px rgba(0,0,0,.9);
+}
+.phone-notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:52px;height:13px;background:#000;border-radius:0 0 9px 9px;z-index:100;}
+.phone-status{position:absolute;top:0;left:0;right:0;height:26px;display:flex;align-items:flex-start;justify-content:space-between;padding:6px 13px 0;z-index:90;pointer-events:none;}
+.ph-time{font-size:8px;font-weight:700;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;}
+.ph-icons{font-size:8px;color:rgba(255,255,255,.4);}
+
+/* Scene viewport */
+.scene-vp{width:100%;height:100%;position:relative;overflow:hidden;}
+/* ── SCENES ── */
+.sc{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  justify-content:center;align-items:flex-start;padding:22px 18px;
+  opacity:0;transform:scale(1.04);
+  transition:opacity .45s ease,transform .45s ease;
+  pointer-events:none;
+}
+.sc.vis{opacity:1;transform:scale(1);pointer-events:auto;}
+
+/* Scene backgrounds */
+.sc-hook   {background:linear-gradient(155deg,#06091E,#0D1440);}
+.sc-prob   {background:linear-gradient(155deg,#0A0510,#150820);}
+.sc-prompt {background:linear-gradient(155deg,#030C14,#061828);}
+.sc-result {background:linear-gradient(155deg,#030A06,#071410);}
+.sc-cta    {background:linear-gradient(155deg,#080414,#150826);}
+
+/* Grain */
+.sc::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.4;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");}
+
+/* Ambient blobs */
+.blob{position:absolute;border-radius:50%;filter:blur(35px);pointer-events:none;}
+
+/* Timer progress */
+.timer-bar{position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,var(--amber),var(--cyan));z-index:50;}
+
+/* ── SCENE CONTENT STYLES ── */
+/* Hook */
+.sc-badge{font-size:7px;font-weight:700;letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:2px;margin-bottom:10px;position:relative;z-index:5;}
+.sc-hl{font-family:'Bebas Neue',sans-serif;line-height:.93;letter-spacing:.5px;position:relative;z-index:5;color:#fff;}
+.sc-sub{font-size:10px;color:rgba(255,255,255,.38);margin-top:8px;line-height:1.6;font-weight:300;position:relative;z-index:5;}
+.sc-wm{position:absolute;bottom:11px;left:0;right:0;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:4px;z-index:5;color:rgba(255,255,255,.12);}
+.sc-wm .a{color:rgba(245,166,35,.35);}.sc-wm .b{color:rgba(0,212,255,.3);}
+
+/* Problem */
+.sc-ptag{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:8px;position:relative;z-index:5;}
+.sc-pstmt{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-style:italic;line-height:.96;margin-bottom:10px;position:relative;z-index:5;}
+.sc-pdiv{width:24px;height:2px;border-radius:1px;margin-bottom:8px;position:relative;z-index:5;}
+.sc-pbody{font-size:10px;font-weight:300;color:rgba(255,255,255,.45);line-height:1.7;position:relative;z-index:5;}
+
+/* Prompt — TYPING ANIMATION */
+.sc-prompt-tag{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:8px;position:relative;z-index:5;}
+.sc-prompt-intro{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:8px;position:relative;z-index:5;}
+.prompt-terminal{
+  background:rgba(0,0,0,.55);border:1px solid rgba(0,212,255,.2);border-radius:7px;
+  padding:10px;width:100%;position:relative;z-index:5;overflow:hidden;
+}
+/* Highlight box effect */
+.highlight-box{
+  position:absolute;border-radius:3px;pointer-events:none;z-index:6;
+  border:1.5px solid rgba(245,166,35,.8);
+  background:rgba(245,166,35,.08);
+  box-shadow:0 0 12px rgba(245,166,35,.3);
+  opacity:0;transition:opacity .3s;
+}
+.highlight-box.show{opacity:1;}
+.prompt-typed{font-family:'DM Mono',monospace;font-size:9px;color:rgba(0,212,255,.9);line-height:1.9;white-space:pre-wrap;}
+.cursor{display:inline-block;width:2px;height:9px;background:var(--cyan);vertical-align:middle;margin-left:1px;animation:blink 0.8s steps(1) infinite;}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+/* Fake cursor dot */
+.fake-cursor{
+  position:absolute;width:10px;height:10px;border-radius:50%;
+  background:rgba(245,166,35,.8);border:1px solid rgba(245,166,35,1);
+  box-shadow:0 0 8px rgba(245,166,35,.6);
+  pointer-events:none;z-index:20;opacity:0;transition:left .4s ease,top .4s ease;
+}
+
+/* Result */
+.sc-rtag{font-size:7px;letter-spacing:4px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:8px;position:relative;z-index:5;}
+.sc-rhl{font-family:'Bebas Neue',sans-serif;line-height:.93;margin-bottom:10px;position:relative;z-index:5;}
+.sc-ritems{display:flex;flex-direction:column;gap:6px;position:relative;z-index:5;}
+.sc-ri{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:5px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);}
+.sc-ri-ico{font-size:10px;flex-shrink:0;}
+.sc-ri-txt{font-size:10px;color:rgba(255,255,255,.55);font-weight:300;}
+/* Zoom effect on result items */
+@keyframes zoomIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.sc-ri.zoom{animation:zoomIn .35s ease both;}
+
+/* CTA */
+.sc-ctop{font-size:7px;letter-spacing:4px;font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:10px;position:relative;z-index:5;}
+.sc-cq{font-family:'Bebas Neue',sans-serif;line-height:.93;margin-bottom:12px;position:relative;z-index:5;color:#fff;}
+.sc-cbox{border-radius:7px;padding:11px;width:100%;position:relative;z-index:5;}
+.sc-ckw{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;display:block;}
+.sc-csub{font-size:9px;color:rgba(255,255,255,.35);line-height:1.6;margin-top:4px;font-weight:300;}
+/* CTA pulse animation */
+@keyframes ctaPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,166,35,.4)}50%{box-shadow:0 0 0 8px rgba(245,166,35,0)}}
+.sc-cbox.pulse{animation:ctaPulse 1.5s ease infinite;}
+
+/* Scene dots */
+.sdots{display:flex;gap:4px;}
+.sdot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s;}
+.sdot.on{background:var(--amber);width:14px;border-radius:3px;}
+
+/* Scene jump */
+.sjumps{display:flex;gap:3px;width:100%;}
+.sj{flex:1;padding:5px 2px;text-align:center;font-size:7px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:1px solid var(--border);background:var(--glass);color:rgba(255,255,255,.25);cursor:pointer;border-radius:3px;transition:all .2s;font-family:'DM Mono',monospace;}
+.sj.cur{background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.4);color:var(--amber);}
+
+/* Playback */
+.playback{display:flex;gap:6px;align-items:center;}
+.plbtn{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.plbtn:hover{background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.3);color:var(--amber);}
+.plbtn.main{width:40px;height:40px;background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.4);color:var(--amber);font-size:13px;}
+.plbtn.playing{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--cyan);}
+.sc-timer{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.2);min-width:50px;text-align:center;}
+
+/* Info card */
+.info-card{width:100%;background:var(--glass);border:1px solid var(--border);border-radius:7px;padding:10px 12px;}
+.ic-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.ic-name{font-size:10px;font-weight:700;color:#fff;}
+.ic-n{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--amber);}
+.ic-lbl{font-size:7px;color:rgba(255,255,255,.2);letter-spacing:2px;font-family:'DM Mono',monospace;text-transform:uppercase;}
+.ic-scene{font-size:11px;font-weight:700;margin-top:2px;}
+
+/* Visual FX badge */
+.vfx-row{display:flex;gap:4px;flex-wrap:wrap;width:100%;}
+.vfx-badge{
+  padding:3px 8px;border-radius:3px;font-size:7px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;font-family:'DM Mono',monospace;
+  border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.25);background:var(--glass);
+  cursor:pointer;transition:all .2s;
+}
+.vfx-badge.on{background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.35);color:var(--purple);}
+
+/* Animations */
+@keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* scrollbars */
+::-webkit-scrollbar{width:2px;height:2px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="wordmark"><span class="a">Prompt</span><span class="b">Aider</span><em>REEL STUDIO 4.0</em></div>
+  <div class="topbar-pills">
+    <div class="pill pill-a">50 Reels</div>
+    <div class="pill pill-c">4 Categories</div>
+    <div class="pill pill-g">Visual FX</div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ══ COL 1: LIBRARY ══ -->
+<div class="lib">
+  <div class="lib-head">
+    <div class="sec-label">Viral Idea Library</div>
+    <input class="search" id="searchBox" placeholder="Search 50 ideas..." oninput="filterLib()">
+  </div>
+  <div class="cat-strip" id="catStrip">
+    <button class="ctab on" onclick="setCat('All',this)">All 50</button>
+    <button class="ctab" onclick="setCat('Creator Content',this)">Creator (1–15)</button>
+    <button class="ctab" onclick="setCat('Monetization',this)">Monetize (16–30)</button>
+    <button class="ctab" onclick="setCat('AI Workflow',this)">Workflow (31–40)</button>
+    <button class="ctab" onclick="setCat('Professional',this)">Pro (41–50)</button>
+  </div>
+  <div class="idea-scroll" id="ideaScroll"></div>
+  <div class="lib-foot">
+    <div class="lfs"><div class="lfs-n" style="color:var(--amber)" id="libDone">0</div><div class="lfs-l">Done</div></div>
+    <div class="lfs"><div class="lfs-n" style="color:var(--cyan)" id="libLeft">50</div><div class="lfs-l">Left</div></div>
+    <div class="lfs"><div class="lfs-n" style="color:var(--green)" id="libPct">0%</div><div class="lfs-l">Complete</div></div>
+  </div>
+</div>
+
+<!-- ══ COL 2: EDITOR ══ -->
+<div class="editor" id="editorPanel">
+
+  <div class="e-title">Select Reel</div>
+  <div class="rgrid" id="reelGrid"></div>
+
+  <!-- Progress -->
+  <div class="prog-card">
+    <div class="prog-row">
+      <div style="font-size:8px;color:rgba(255,255,255,.2);letter-spacing:3px;font-family:'DM Mono',monospace;text-transform:uppercase;">Batch Progress</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--amber)" id="pctLbl">0%</div>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="prog-nums">
+      <div class="pn"><div class="pn-v" style="color:var(--amber)" id="doneN">0</div><div class="pn-l">Done</div></div>
+      <div class="pn"><div class="pn-v" style="color:var(--cyan)" id="leftN">50</div><div class="pn-l">Left</div></div>
+      <div class="pn"><div class="pn-v" style="color:rgba(255,255,255,.25)">50</div><div class="pn-l">Total</div></div>
+    </div>
+  </div>
+
+  <!-- Pattern -->
+  <div class="e-title">Hook Pattern</div>
+  <div class="flex-row" id="patRow">
+    <button class="pbtn sel" onclick="setPat(0,this)">P1 — STOP</button>
+    <button class="pbtn" onclick="setPat(1,this)">P2 — Most don't know</button>
+    <button class="pbtn" onclick="setPat(2,this)">P3 — Saves hours</button>
+    <button class="pbtn" onclick="setPat(3,this)">P4 — Save this</button>
+    <button class="pbtn" onclick="setPat(4,this)">P5 — Ideas → money</button>
+  </div>
+
+  <!-- Accent -->
+  <div class="e-title" style="margin-top:8px;">Accent Color</div>
+  <div class="flex-row" id="accRow">
+    <div class="swatch sel" style="background:#F5A623" title="Amber" onclick="setAcc('#F5A623',this)"></div>
+    <div class="swatch" style="background:#00D4FF" title="Cyan"  onclick="setAcc('#00D4FF',this)"></div>
+    <div class="swatch" style="background:#A855F7" title="Purple" onclick="setAcc('#A855F7',this)"></div>
+    <div class="swatch" style="background:#FF4757" title="Red"    onclick="setAcc('#FF4757',this)"></div>
+    <div class="swatch" style="background:#22C55E" title="Green"  onclick="setAcc('#22C55E',this)"></div>
+    <span style="font-size:7px;color:rgba(255,255,255,.15);font-family:'DM Mono',monospace;letter-spacing:2px;margin-left:4px;">COLOR</span>
+  </div>
+
+  <!-- ── SCENE BLOCKS ── -->
+  <!-- Scene 1: Hook -->
+  <div class="sblock sopen" id="sb1" style="border-color:rgba(245,166,35,.2);margin-top:12px;">
+    <div class="shdr" onclick="toggleSc('sb1','bd1')">
+      <div class="sn" style="background:rgba(245,166,35,.15);color:var(--amber);border:1px solid rgba(245,166,35,.25);">1</div>
+      <div class="sname" style="color:var(--amber);">Hook</div><div class="stiming">0–2 sec</div><div class="schev">▾</div>
+    </div>
+    <div class="sbody" id="bd1">
+      <div class="fl">Hook Headline</div>
+      <input class="fi" id="fHook" placeholder="STOP doing this with ChatGPT." oninput="renderPrev()">
+      <div class="fl mt6">Subtext</div>
+      <input class="fi" id="fSub" placeholder="There's a smarter way." oninput="renderPrev()">
+    </div>
+  </div>
+
+  <!-- Scene 2: Problem -->
+  <div class="sblock sopen" id="sb2" style="border-color:rgba(255,71,87,.2);">
+    <div class="shdr" onclick="toggleSc('sb2','bd2')">
+      <div class="sn" style="background:rgba(255,71,87,.12);color:var(--red);border:1px solid rgba(255,71,87,.25);">2</div>
+      <div class="sname" style="color:var(--red);">Problem</div><div class="stiming">2–4 sec</div><div class="schev">▾</div>
+    </div>
+    <div class="sbody" id="bd2">
+      <div class="fl">Problem Statement</div>
+      <input class="fi" id="fProbStmt" oninput="renderPrev()">
+      <div class="fl mt6">Why It Matters</div>
+      <input class="fi" id="fProbBody" oninput="renderPrev()">
+    </div>
+  </div>
+
+  <!-- Scene 3: Prompt -->
+  <div class="sblock sopen" id="sb3" style="border-color:rgba(0,212,255,.2);">
+    <div class="shdr" onclick="toggleSc('sb3','bd3')">
+      <div class="sn" style="background:rgba(0,212,255,.1);color:var(--cyan);border:1px solid rgba(0,212,255,.25);">3</div>
+      <div class="sname" style="color:var(--cyan);">Prompt</div><div class="stiming">4–9 sec</div><div class="schev">▾</div>
+    </div>
+    <div class="sbody" id="bd3">
+      <div class="fl">Prompt On Screen (typing animation)</div>
+      <textarea class="fta" id="fPrompt" rows="4" oninput="renderPrev()"></textarea>
+      <div class="fl mt6">Category Tag</div>
+      <input class="fi" id="fCat" oninput="renderPrev()">
+    </div>
+  </div>
+
+  <!-- Scene 4: Result -->
+  <div class="sblock sopen" id="sb4" style="border-color:rgba(34,197,94,.2);">
+    <div class="shdr" onclick="toggleSc('sb4','bd4')">
+      <div class="sn" style="background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.25);">4</div>
+      <div class="sname" style="color:var(--green);">Result</div><div class="stiming">9–12 sec</div><div class="schev">▾</div>
+    </div>
+    <div class="sbody" id="bd4">
+      <div class="fl">Result Headline</div>
+      <input class="fi" id="fResHl" oninput="renderPrev()">
+      <div class="fl mt6">Result Items (one per line)</div>
+      <textarea class="fta" id="fResItems" rows="3" oninput="renderPrev()"></textarea>
+    </div>
+  </div>
+
+  <!-- Scene 5: CTA -->
+  <div class="sblock sopen" id="sb5" style="border-color:rgba(168,85,247,.2);">
+    <div class="shdr" onclick="toggleSc('sb5','bd5')">
+      <div class="sn" style="background:rgba(168,85,247,.1);color:var(--purple);border:1px solid rgba(168,85,247,.25);">5</div>
+      <div class="sname" style="color:var(--purple);">CTA</div><div class="stiming">12–15 sec</div><div class="schev">▾</div>
+    </div>
+    <div class="sbody" id="bd5">
+      <div class="chips">
+        <div class="chip sel" onclick="setCTA('Comment PROMPTS',this)">Comment PROMPTS</div>
+        <div class="chip" onclick="setCTA('Comment AI',this)">Comment AI</div>
+        <div class="chip" onclick="setCTA('Save this prompt',this)">Save this</div>
+        <div class="chip" onclick="setCTA('DM PROMPT',this)">DM PROMPT</div>
+      </div>
+      <input class="fi" id="fCtaKw" value="Comment PROMPTS" oninput="renderPrev()">
+      <div class="fl mt6">Subtext</div>
+      <input class="fi" id="fCtaSub" value="and I'll send you my FREE AI Starter Kit." oninput="renderPrev()">
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="act-row">
+    <button class="btn btn-a" onclick="markDone()">✓ Mark Done</button>
+    <button class="btn btn-c" onclick="nextReel()">Next →</button>
+    <button class="btn btn-g" onclick="startPlay()">▶ Preview</button>
+    <button class="btn btn-ghost" onclick="exportScenes()">⬇ Export</button>
+  </div>
+
+  <!-- ── GENERATORS (from Studio 3) ── -->
+  <div class="gen-section">
+    <div class="e-title" style="margin-top:4px;">Generators</div>
+    <div class="gen-grid">
+      <button class="btn btn-ghost" onclick="genHook()">🎣 Hook Generator</button>
+      <button class="btn btn-ghost" onclick="genCaption()">✍ Caption Generator</button>
+      <button class="btn btn-ghost" onclick="genTags()">🏷 Hashtag Generator</button>
+      <button class="btn btn-ghost" onclick="genIdea()">💡 Reel Idea</button>
+    </div>
+    <div class="gen-output" id="genOut"></div>
+    <div class="hashtag-out" id="tagOut"></div>
+  </div>
+
+</div><!-- /editor -->
+
+<!-- ══ COL 3: PREVIEW ══ -->
+<div class="preview-col">
+  <div class="p-label">Live Preview · 9:16</div>
+
+  <div class="phone-wrap">
+    <div class="phone" id="phoneEl">
+      <div class="phone-notch"></div>
+      <div class="phone-status">
+        <span class="ph-time" id="clockEl">9:41</span>
+        <span class="ph-icons">▶◼⊕</span>
+      </div>
+      <div class="scene-vp" id="sceneVp"></div>
+      <div class="fake-cursor" id="fakeCursor"></div>
+      <div class="timer-bar" id="timerBar" style="width:0%;transition:none;"></div>
+    </div>
+  </div>
+
+  <div class="sdots" id="sceneDots">
+    <div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div>
+    <div class="sdot"></div><div class="sdot"></div>
+  </div>
+
+  <div class="sjumps">
+    <button class="sj cur" id="sj0" onclick="jumpTo(0)">Hook</button>
+    <button class="sj" id="sj1" onclick="jumpTo(1)">Prob</button>
+    <button class="sj" id="sj2" onclick="jumpTo(2)">Prompt</button>
+    <button class="sj" id="sj3" onclick="jumpTo(3)">Result</button>
+    <button class="sj" id="sj4" onclick="jumpTo(4)">CTA</button>
+  </div>
+
+  <button onclick="openCopyModal()" style="
+    width:100%;padding:9px;border-radius:6px;
+    background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);
+    color:#00D4FF;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;
+    letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;
+  " onmouseover="this.style.background='rgba(0,212,255,.18)'" onmouseout="this.style.background='rgba(0,212,255,.1)'">
+    📋 Copy Prompt + Get Instagram Caption
+  </button>
+
+  <div class="playback">
+    <button class="plbtn" onclick="jumpTo((curScene+4)%5)">⟨</button>
+    <button class="plbtn main" id="playBtn" onclick="togglePlay()">▶</button>
+    <button class="plbtn" onclick="jumpTo((curScene+1)%5)">⟩</button>
+    <span class="sc-timer" id="scTimerLbl">0–2 sec</span>
+  </div>
+
+  <!-- Visual FX toggles -->
+  <div style="width:100%"><div class="p-label" style="margin-bottom:6px;">Visual FX</div>
+  <div class="vfx-row">
+    <div class="vfx-badge on" id="vfx-type" onclick="toggleFX('type',this)">⌨ Typing</div>
+    <div class="vfx-badge on" id="vfx-zoom" onclick="toggleFX('zoom',this)">🔍 Zoom</div>
+    <div class="vfx-badge on" id="vfx-cursor" onclick="toggleFX('cursor',this)">🖱 Cursor</div>
+    <div class="vfx-badge on" id="vfx-hl" onclick="toggleFX('hl',this)">✦ Highlight</div>
+  </div></div>
+
+  <div class="info-card">
+    <div class="ic-row">
+      <div class="ic-name" id="icName">Reel 01 — Creator Content</div>
+      <div class="ic-n" id="icN">01</div>
+    </div>
+    <div class="ic-lbl">Current Scene</div>
+    <div class="ic-scene" id="icScene" style="color:var(--amber)">① Hook (0–2 sec)</div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+/* ══════════ ALL 50 IDEAS ══════════ */
+const IDEAS=[
+  {id:1, cat:'Creator Content',accent:'#F5A623',
+   hook:'Stop staring at a blank page.',
+   prob:'Content block kills consistency. No consistency means no growth.',
+   probBody:'Most creators waste 30 minutes per post staring at nothing. This ends that.',
+   prompt:'Act as a content strategist.\n\nGenerate 30 content ideas\nfor [this niche].',
+   result:'30 IDEAS IN SECONDS.',items:['30 ready-to-use ideas','Organized by format','Never blank again']},
+  {id:2, cat:'Creator Content',accent:'#F5A623',
+   hook:'This prompt writes all your captions.',
+   prob:'Writing captions manually burns 45 minutes per post.',
+   probBody:'Most creators waste hours on captions that could be written in 60 seconds with the right prompt.',
+   prompt:'Act as a social media copywriter.\n\nWrite 5 Instagram captions\nwith hooks and CTAs.',
+   result:'5 CAPTIONS. READY TO POST.',items:['5 captions written','Hooks + CTAs included','Copy-paste ready']},
+  {id:3, cat:'Creator Content',accent:'#F5A623',
+   hook:'Use this to create 20 viral hooks.',
+   prob:'Weak hooks kill great content before anyone sees it.',
+   probBody:"Your content is only as good as your first 2 seconds. Most creators don't know how to write hooks that stop the scroll.",
+   prompt:'Act as a hook specialist.\n\nGenerate 20 scroll-stopping\nhooks for [niche].',
+   result:'20 VIRAL HOOKS DONE.',items:['20 hooks ready','Curiosity + bold claim mix','Tested formats']},
+  {id:4, cat:'Creator Content',accent:'#F5A623',
+   hook:'This builds your 30-day content plan.',
+   prob:'Posting reactively is why growth feels slow and unpredictable.',
+   probBody:'Without a content plan, you guess every day. This prompt maps 30 days in 60 seconds.',
+   prompt:'Act as a social media strategist.\n\nCreate a 30-day content plan\nfor a [niche] creator.',
+   result:'30 DAYS PLANNED.',items:['Daily topics mapped','Format per day set','Engagement goals ready']},
+  {id:5, cat:'Creator Content',accent:'#F5A623',
+   hook:'This prompt finds trending content ideas.',
+   prob:"You're posting — but you're not tapping into what people are already searching for.",
+   probBody:'Trending content gets discovered. Generic content gets buried. Here is how you find what is trending in your niche.',
+   prompt:'Act as a trend researcher.\n\nFind 15 trending topics\nfor [niche] right now.',
+   result:'15 TRENDING IDEAS.',items:['15 trending topics','Platform-specific angles','Timely and relevant']},
+  {id:6, cat:'Creator Content',accent:'#F5A623',
+   hook:'One idea becomes 10 posts with this prompt.',
+   prob:'Most creators create one piece of content and post it once. That is a waste.',
+   probBody:'Every idea you have can become 10 pieces of content across multiple formats. This prompt does the repurposing for you.',
+   prompt:'Act as a repurposing expert.\n\nTurn this idea: [idea]\ninto 10 different post formats.',
+   result:'10 POSTS FROM 1 IDEA.',items:['10 unique post formats','Zero extra brainstorming','Works every single week']},
+  {id:7, cat:'Creator Content',accent:'#F5A623',
+   hook:'This prompt writes an entire carousel.',
+   prob:'Carousels get the most saves on Instagram. Most creators skip them because writing 10 slides feels hard.',
+   probBody:'One structured prompt writes all 10 slides — cover, hook, value, and CTA — in one go.',
+   prompt:'Act as a carousel copywriter.\n\nWrite a 10-slide carousel\nfor [topic] optimized for saves.',
+   result:'10-SLIDE CAROUSEL DONE.',items:['10 slides written','Save-optimized structure','Cover + hook included']},
+  {id:8, cat:'Creator Content',accent:'#F5A623',
+   hook:'This creates your full content calendar.',
+   prob:'No calendar means no system. No system means burnout.',
+   probBody:'A content calendar is the difference between creators who scale and creators who plateau. This builds yours in one session.',
+   prompt:'Act as a content planner.\n\nBuild a monthly content\ncalendar for [niche] creator.',
+   result:'FULL MONTH CALENDARED.',items:['Every day planned','Themes + formats set','Batch-ready structure']},
+  {id:9, cat:'Creator Content',accent:'#F5A623',
+   hook:'This rewrites boring posts into viral ones.',
+   prob:'You have good ideas. The problem is how you are packaging them.',
+   probBody:"Most posts fail because the hook is weak and the format is flat. This prompt fixes both in seconds.",
+   prompt:'Act as a viral content editor.\n\nRewrite this post to be\n10x more engaging: [post].',
+   result:'BORING POST → NOW VIRAL.',items:['Hook upgraded','Engagement boosted','CTA sharpened']},
+  {id:10, cat:'Creator Content',accent:'#F5A623',
+   hook:'This turns your tweets into Reels.',
+   prob:'You are creating content on one platform and leaving the rest empty.',
+   probBody:'Every tweet thread you write is a Reel waiting to happen. This prompt converts it in 30 seconds.',
+   prompt:'Act as a Reel scriptwriter.\n\nTurn this tweet thread\ninto a 15-second Reel script.',
+   result:'TWEET BECOMES A REEL.',items:['Script ready to film','Hook + CTA included','Under 15 seconds']},
+  {id:11, cat:'Creator Content',accent:'#F5A623',
+   hook:'This creates storytelling posts that connect.',
+   prob:'People scroll past information. They stop for stories.',
+   probBody:'Storytelling is the highest-converting content format. Most creators write information. This prompt writes stories.',
+   prompt:'Act as a brand storyteller.\n\nTurn this experience: [story]\ninto a viral narrative post.',
+   result:'A STORY THAT STOPS SCROLLS.',items:['Emotional arc built','Relatable and shareable','CTA woven in naturally']},
+  {id:12, cat:'Creator Content',accent:'#F5A623',
+   hook:'This generates engagement questions instantly.',
+   prob:'Most posts get likes. Few posts get comments. Comments build community.',
+   probBody:"The algorithm pushes posts that start conversations. This prompt gives you 20 questions that people can't help but answer.",
+   prompt:'Act as a community builder.\n\nGenerate 20 engagement\nquestions for [niche] audience.',
+   result:'20 QUESTIONS THAT START CONVOS.',items:['20 unique questions','Comment-driving formats','Build loyal community']},
+  {id:13, cat:'Creator Content',accent:'#F5A623',
+   hook:'This finds controversial takes in your niche.',
+   prob:'Safe content gets ignored. Controversial content gets shared.',
+   probBody:'The posts that blow up are usually the ones that challenge a popular belief. This prompt finds the angles in your niche.',
+   prompt:'Act as a thought leader.\n\nGenerate 10 controversial\nopinions in [niche] that spark debate.',
+   result:'10 HOT TAKES. POST TODAY.',items:['10 debate-starting angles','Platform-safe formats','High engagement potential']},
+  {id:14, cat:'Creator Content',accent:'#F5A623',
+   hook:'This creates educational content that gets saves.',
+   prob:"Educational content is the most saved content type. Most creators don't use the right structure.",
+   probBody:'Saves tell the algorithm your content is worth pushing. This prompt writes educational posts in the exact format that gets saved.',
+   prompt:'Act as an educator.\n\nCreate a 5-step educational\npost about [topic] for [audience].',
+   result:'EDUCATIONAL POST READY.',items:['5-step structure','Save-optimized format','Teaches and converts']},
+  {id:15, cat:'Creator Content',accent:'#F5A623',
+   hook:'This writes 10 Reel hooks instantly.',
+   prob:'Your hook is the first 2 seconds. If it fails, the whole Reel fails.',
+   probBody:"Most creators spend more time on their Reel than their hook. That's backwards. The hook is everything.",
+   prompt:'Act as a Reel hook writer.\n\nWrite 10 opening hooks for\nReels about [topic].',
+   result:'10 REEL HOOKS. FILM NOW.',items:['10 hooks ready to film','2-second stop-scroll format','Every style covered']},
+
+  /* Monetization 16-30 */
+  {id:16, cat:'Monetization',accent:'#A855F7',
+   hook:'This turns your idea into a digital product.',
+   prob:'Most creators have ideas. Almost none turn them into income.',
+   probBody:'The gap between an idea and a sellable product is a packaging problem. This prompt closes that gap in one session.',
+   prompt:'Act as a product strategist.\n\nTransform this idea: [idea]\ninto a sellable digital product.',
+   result:'PRODUCT CONCEPT READY.',items:['Product format decided','Pricing suggested','Target audience defined']},
+  {id:17, cat:'Monetization',accent:'#A855F7',
+   hook:'AI validates your product before you build it.',
+   prob:'Most creators build products nobody buys. They skipped validation.',
+   probBody:'Validation takes 10 minutes. Building a product nobody wants takes 3 weeks. Run this prompt first.',
+   prompt:'Act as a market researcher.\n\nValidate this product: [idea]\nGo or no-go verdict with reasoning.',
+   result:'VALIDATED. BUILD OR DITCH.',items:['Demand score given','Risks clearly flagged','Clear go/no-go verdict']},
+  {id:18, cat:'Monetization',accent:'#A855F7',
+   hook:'This builds a complete sales funnel.',
+   prob:'Followers do not automatically become buyers. You need a funnel.',
+   probBody:'Most creators post and hope. A funnel turns every post into a system that sells. This prompt designs the whole thing.',
+   prompt:'Act as a funnel strategist.\n\nBuild a complete funnel\nfor [offer].',
+   result:'FULL FUNNEL MAPPED.',items:['Lead magnet designed','Email sequence outlined','Tripwire offer included']},
+  {id:19, cat:'Monetization',accent:'#A855F7',
+   hook:'This creates a profitable niche for you.',
+   prob:'Most creators pick niches they like. Not niches that pay.',
+   probBody:'Passion does not pay. Profitable pain points pay. This prompt finds the intersection of what you know and what people buy.',
+   prompt:'Act as a niche strategist.\n\nFind 5 profitable niches\nfor a [skill/interest] creator.',
+   result:'5 PROFITABLE NICHES FOUND.',items:['5 niches ranked','Demand + competition scored','Start today with clarity']},
+  {id:20, cat:'Monetization',accent:'#A855F7',
+   hook:'This designs a high-ticket offer.',
+   prob:'Selling cheap products means you need a huge audience to make real money.',
+   probBody:'One high-ticket offer can replace 100 low-ticket sales. This prompt builds the offer structure, positioning, and pricing.',
+   prompt:'Act as an offer architect.\n\nDesign a high-ticket offer\nfor [niche] audience.',
+   result:'HIGH-TICKET OFFER BUILT.',items:['Offer structure set','Premium pricing built','Conversion-ready framing']},
+  {id:21, cat:'Monetization',accent:'#A855F7',
+   hook:'This turns your content into products.',
+   prob:"You're giving away content for free that people would pay for.",
+   probBody:'Every post you write is a potential product. This prompt identifies which content pieces to package and sell.',
+   prompt:'Act as a content monetization expert.\n\nTurn my best content\ninto sellable products.',
+   result:'CONTENT BECOMES INCOME.',items:['3+ product formats','Priced and positioned','Ready to list today']},
+  {id:22, cat:'Monetization',accent:'#A855F7',
+   hook:'This finds the pain points people pay to fix.',
+   prob:'Generic audiences do not buy. Specific pain points drive purchases.',
+   probBody:'The more specific the pain, the higher the willingness to pay. This prompt maps the pain points in your niche that convert.',
+   prompt:'Act as a customer researcher.\n\nIdentify 10 painful problems\n[audience] will pay to solve.',
+   result:'10 PAIN POINTS THAT PAY.',items:['10 monetizable problems','Ranked by urgency','Product ideas per pain point']},
+  {id:23, cat:'Monetization',accent:'#A855F7',
+   hook:'This writes sales copy that converts.',
+   prob:"Most people write product descriptions. Not sales copy. There's a massive difference.",
+   probBody:'Descriptions list features. Sales copy sells transformation. This prompt writes the copy that actually moves people to buy.',
+   prompt:'Act as a sales copywriter.\n\nWrite sales copy for [product]\nthat converts browsers to buyers.',
+   result:'SALES COPY WRITTEN.',items:['Headline + hook done','Objections handled','CTA that converts']},
+  {id:24, cat:'Monetization',accent:'#A855F7',
+   hook:'This builds a landing page that converts.',
+   prob:'Most landing pages describe the product. Great ones sell the transformation.',
+   probBody:"Your landing page is doing the selling when you're not there. If it's weak, you're leaving money on the table every day.",
+   prompt:'Act as a conversion copywriter.\n\nWrite a landing page\nfor [offer].',
+   result:'LANDING PAGE READY.',items:['Full page copy done','Section by section','Publish-ready format']},
+  {id:25, cat:'Monetization',accent:'#A855F7',
+   hook:'This creates a profitable product bundle.',
+   prob:'Single products leave money on the table. Bundles increase average order value.',
+   probBody:'Buyers who want one thing usually want the complete solution. Bundles give them that — and you earn more per sale.',
+   prompt:'Act as a product bundler.\n\nDesign a product bundle\nfor [audience] at [price point].',
+   result:'BUNDLE DESIGNED. LIST IT.',items:['Bundle concept ready','Value stack built','Pricing optimized']},
+  {id:26, cat:'Monetization',accent:'#A855F7',
+   hook:'This generates 10 digital product ideas.',
+   prob:'Most creators do not know what to sell. This removes the guessing.',
+   probBody:'You have expertise people will pay for. The hard part is knowing which ideas have the best demand. This prompt answers that.',
+   prompt:'Act as a digital product strategist.\n\nGenerate 10 digital product\nideas for [niche].',
+   result:'10 PRODUCT IDEAS READY.',items:['10 validated ideas','Formats + pricing','Start building today']},
+  {id:27, cat:'Monetization',accent:'#A855F7',
+   hook:'This builds a monetized newsletter strategy.',
+   prob:'Most newsletters grow an audience but never make money from it.',
+   probBody:'A newsletter without a monetization strategy is a hobby. This prompt turns it into a business with multiple revenue paths.',
+   prompt:'Act as a newsletter strategist.\n\nBuild a monetized newsletter\nstrategy for [niche].',
+   result:'NEWSLETTER STRATEGY DONE.',items:['Content pillars set','Monetization paths mapped','Growth plan included']},
+  {id:28, cat:'Monetization',accent:'#A855F7',
+   hook:'This designs a membership site offer.',
+   prob:'One-time sales create income spikes. Memberships create income stability.',
+   probBody:'Recurring revenue is the most valuable income model for creators. This prompt designs the offer, tiers, and value structure.',
+   prompt:'Act as a membership strategist.\n\nDesign a membership offering\nfor [audience].',
+   result:'MEMBERSHIP MODEL DESIGNED.',items:['Membership tiers set','Monthly value mapped','Retention strategy built']},
+  {id:29, cat:'Monetization',accent:'#A855F7',
+   hook:'This builds your passive income plan.',
+   prob:'Most creators trade time for money. Passive income breaks that cycle.',
+   probBody:"You can't scale time. You can scale products. This prompt maps 3 passive income streams tailored to your skills.",
+   prompt:'Act as a passive income coach.\n\nBuild a passive income plan\nfor a [skill] creator.',
+   result:'PASSIVE INCOME PLAN DONE.',items:['3 income streams designed','Timeline included','Actions to start this week']},
+  {id:30, cat:'Monetization',accent:'#A855F7',
+   hook:'This finds digital product gaps in your niche.',
+   prob:'The best time to build a product is when there is demand and low competition.',
+   probBody:'Most creators enter crowded markets. This prompt finds the underserved gaps where you can win with less competition.',
+   prompt:'Act as a market analyst.\n\nFind 5 underserved digital\nproduct gaps in [niche].',
+   result:'5 GAPS = 5 OPPORTUNITIES.',items:['5 market gaps found','Low competition niches','Build before others do']},
+
+  /* AI Workflow 31-40 */
+  {id:31, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'This builds an automated business workflow.',
+   prob:"You're doing manually what AI could do automatically.",
+   probBody:'Every repetitive task in your business is a workflow waiting to be automated. This prompt maps the system for you.',
+   prompt:'Act as an operations strategist.\n\nBuild an automated workflow\nfor [business task].',
+   result:'WORKFLOW BUILT. AUTOMATE IT.',items:['Step-by-step workflow','Tools identified','Time saved per week calculated']},
+  {id:32, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'This creates your productivity system.',
+   prob:'Without a system, you react to everything and build nothing.',
+   probBody:'Productivity is not about doing more. It is about having a system that makes the right things happen automatically.',
+   prompt:'Act as a productivity architect.\n\nDesign a complete productivity\nsystem for [role + goals].',
+   result:'PRODUCTIVITY SYSTEM DONE.',items:['Daily + weekly structure','Deep work blocks set','Review ritual included']},
+  {id:33, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'This turns your notes into content.',
+   prob:'You have ideas scattered everywhere. None of them ever become posts.',
+   probBody:'Raw notes are 90% of the work. This prompt takes the mess and turns it into polished content pieces ready to publish.',
+   prompt:'Act as a content transformer.\n\nTurn these raw notes: [notes]\ninto polished content pieces.',
+   result:'NOTES → CONTENT IN 60 SEC.',items:['5 content pieces created','Multiple formats','Zero blank page ever again']},
+  {id:34, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'This organizes all your scattered ideas.',
+   prob:'Good ideas die when they are never organized or prioritized.',
+   probBody:"Most creators have too many ideas and no structure. This prompt takes what's in your head and turns it into an ordered action list.",
+   prompt:'Act as an idea organizer.\n\nTake these ideas: [ideas]\nSort, prioritize, and structure them.',
+   result:'IDEAS ORGANIZED AND RANKED.',items:['Ideas sorted by value','Priority order set','Action list ready']},
+  {id:35, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'This summarizes hours of research instantly.',
+   prob:'Research takes hours. Most of it never becomes useful output.',
+   probBody:'You do not have time to read everything. This prompt extracts the insights and action items from any research in seconds.',
+   prompt:'Act as a research analyst.\n\nSummarize this research: [research]\nInto key insights + action items.',
+   result:'RESEARCH SUMMARIZED.',items:['Key insights extracted','Action items listed','Hours of reading saved']},
+  {id:36, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'This writes your SOPs in minutes.',
+   prob:"You can't scale or delegate without documented processes.",
+   probBody:'Every task you do repeatedly is a delegation opportunity. But you need an SOP first. This prompt writes it in one shot.',
+   prompt:'Act as an operations writer.\n\nCreate a step-by-step SOP\nfor [business process].',
+   result:'SOP WRITTEN. DELEGATE NOW.',items:['Full SOP structured','Delegate-ready format','Repeatable process built']},
+  {id:37, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'This builds a content repurposing system.',
+   prob:'Creating content for one platform and ignoring the rest is leaving reach on the table.',
+   probBody:'One piece of content can reach 5 platforms. This prompt builds the repurposing system so nothing goes to waste.',
+   prompt:'Act as a repurposing strategist.\n\nBuild a system to repurpose\n[content type] across platforms.',
+   result:'REPURPOSE SYSTEM DONE.',items:['One piece → 5 platforms','Weekly workflow mapped','Zero extra thinking required']},
+  {id:38, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'This turns podcasts into social posts.',
+   prob:'A one-hour podcast episode gets consumed once and forgotten.',
+   probBody:'Every podcast episode contains 20 pieces of content. This prompt extracts and formats them for every platform.',
+   prompt:'Act as a podcast repurposer.\n\nTurn this podcast transcript\ninto 5 social media posts.',
+   result:'PODCAST → 5 POSTS.',items:['5 posts from 1 episode','Hooks extracted','Platform-specific formatting']},
+  {id:39, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'This builds your weekly workflow.',
+   prob:'Without a workflow, every week starts from scratch.',
+   probBody:'The most productive creators batch their work in structured weekly systems. This prompt designs that system for you.',
+   prompt:'Act as a weekly planner.\n\nDesign a weekly workflow\nfor a [role] creator.',
+   result:'WEEKLY WORKFLOW BUILT.',items:['Every day structured','Batch days planned','Review ritual included']},
+  {id:40, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'AI builds your entire business plan.',
+   prob:'Most people never start because they cannot see the full picture.',
+   probBody:'A business plan is not a 40-page document. It is a clear model, a target customer, and a 90-day action list. This builds all three.',
+   prompt:'Act as a business strategist.\n\nBuild a lean business plan\nfor [business idea].',
+   result:'BUSINESS PLAN COMPLETE.',items:['Model + market defined','90-day actions mapped','Revenue path included']},
+
+  /* Professional 41-50 */
+  {id:41, cat:'Professional',accent:'#22C55E',
+   hook:'This writes your business emails.',
+   prob:'Poorly written emails lose deals, damage relationships, and waste time.',
+   probBody:"Most business emails are too long, unclear, and easy to ignore. This prompt writes ones that get opened, read, and replied to.",
+   prompt:'Act as a business writer.\n\nWrite a professional email\nfor [situation + goal].',
+   result:'EMAIL WRITTEN. SEND IT.',items:['Professional tone set','Clear and direct','Ready to send now']},
+  {id:42, cat:'Professional',accent:'#22C55E',
+   hook:'This creates proposals that win clients.',
+   prob:"Most proposals are too long, too vague, and arrive too late.",
+   probBody:'Clients buy certainty. A strong proposal gives them certainty about the result, the timeline, and what it costs. This writes it.',
+   prompt:'Act as a proposal writer.\n\nCreate a project proposal\nfor [client + service].',
+   result:'PROPOSAL DONE. CLOSE THE DEAL.',items:['Full proposal structured','Pricing + terms included','Professional format ready']},
+  {id:43, cat:'Professional',accent:'#22C55E',
+   hook:'This writes LinkedIn posts that get traction.',
+   prob:'Most professionals have expertise worth sharing. Almost none know how to package it for LinkedIn.',
+   probBody:'LinkedIn rewards consistent, high-quality posts. This prompt writes 5 authority-building posts in the format that gets noticed.',
+   prompt:'Act as a LinkedIn copywriter.\n\nWrite 5 LinkedIn posts\nfor [professional topic].',
+   result:'5 LINKEDIN POSTS READY.',items:['5 posts written','Authority-building tone','Engagement-optimized format']},
+  {id:44, cat:'Professional',accent:'#22C55E',
+   hook:'This creates client reports in minutes.',
+   prob:'Client reports take hours to write and often get ignored.',
+   probBody:'A well-structured report builds trust and justifies your value. This prompt writes it in a format clients actually read.',
+   prompt:'Act as a report writer.\n\nCreate a client report\nfor [project + results].',
+   result:'CLIENT REPORT DONE.',items:['Professional structure','Results clearly highlighted','Ready to deliver']},
+  {id:45, cat:'Professional',accent:'#22C55E',
+   hook:'This builds a complete marketing strategy.',
+   prob:'Random marketing tactics without a strategy is just expensive experimentation.',
+   probBody:'A strategy connects your audience, your message, your channels, and your goals. This prompt maps the whole picture in one session.',
+   prompt:'Act as a marketing strategist.\n\nBuild a 90-day marketing\nstrategy for [business].',
+   result:'MARKETING STRATEGY BUILT.',items:['90-day roadmap set','Channels prioritized','KPIs and goals defined']},
+  {id:46, cat:'Professional',accent:'#22C55E',
+   hook:'This writes your entire website copy.',
+   prob:'Most website copy describes what you do. Great copy sells what changes for the client.',
+   probBody:'Your website is working or not working 24 hours a day. If the copy is weak, you are losing leads every single day.',
+   prompt:'Act as a web copywriter.\n\nWrite the homepage copy\nfor [business + audience].',
+   result:'WEBSITE COPY WRITTEN.',items:['Headline + hero copy done','Services + about sections','CTA fully optimized']},
+  {id:47, cat:'Professional',accent:'#22C55E',
+   hook:'This builds brand messaging that converts.',
+   prob:'Inconsistent messaging confuses buyers and kills trust.',
+   probBody:'Your brand message needs to be the same whether someone finds you on Instagram, your website, or your email. This aligns all three.',
+   prompt:'Act as a brand strategist.\n\nDefine brand messaging\nfor [business or creator].',
+   result:'BRAND MESSAGING DEFINED.',items:['Core message set','Tagline + voice defined','Consistent across channels']},
+  {id:48, cat:'Professional',accent:'#22C55E',
+   hook:'This writes newsletters people actually read.',
+   prob:'Most newsletters end up unopened because they lead with information, not value.',
+   probBody:'The best newsletters feel like a conversation with a trusted friend, not a corporate update. This prompt writes that version.',
+   prompt:'Act as a newsletter writer.\n\nWrite a newsletter issue\nfor [topic + audience].',
+   result:'NEWSLETTER WRITTEN.',items:['Subject line crafted','Full issue drafted','CTA naturally included']},
+  {id:49, cat:'Professional',accent:'#22C55E',
+   hook:'This creates full marketing campaigns.',
+   prob:'Most marketing efforts are scattered and disconnected. That is why they fail.',
+   probBody:'A campaign needs a clear goal, a consistent message, the right channels, and a timeline. This prompt builds all four.',
+   prompt:'Act as a campaign strategist.\n\nCreate a full marketing campaign\nfor [product + goal].',
+   result:'CAMPAIGN BUILT. LAUNCH IT.',items:['Campaign strategy defined','Assets list created','Launch timeline mapped']},
+  {id:50, cat:'Professional',accent:'#22C55E',
+   hook:'This builds a growth strategy from scratch.',
+   prob:"Most businesses grow by accident. The ones that scale do it by design.",
+   probBody:'Growth without a strategy is just luck. This prompt identifies your growth levers, priority actions, and the metrics that tell you it is working.',
+   prompt:'Act as a growth strategist.\n\nBuild a growth strategy\nfor [business or creator].',
+   result:'GROWTH STRATEGY DONE.',items:['Growth levers identified','Priority actions set','Metrics + goals defined']},
+];
+
+const CAT_COLORS={'Creator Content':'#F5A623','Monetization':'#A855F7','AI Workflow':'#00D4FF','Professional':'#22C55E'};
+const SCENE_TIMINGS=['0–2 sec','2–4 sec','4–9 sec','9–12 sec','12–15 sec'];
+const SCENE_NAMES=['① Hook','② Problem','③ Prompt','④ Result','⑤ CTA'];
+const SCENE_DUR=[2000,2000,5000,3000,3000];
+const HOOK_PATS=['STOP doing this with ChatGPT.','Most people don\'t know ChatGPT can do this.','This AI prompt saves me 5 hours.','If you\'re a creator, save this prompt.','This prompt turns ideas into money.'];
+const HOOKS_BANK=['STOP asking ChatGPT random questions','This AI prompt saves you hours','Most creators use ChatGPT wrong','Use this prompt instead','This prompt writes your content','Steal this AI workflow','Creators are missing this AI trick','STOP wasting time on random prompts','This changed how I use AI','Most people skip this ChatGPT feature'];
+const REEL_IDEAS_BANK=['Prompt to generate 20 viral hooks','Prompt to create a 30-day content plan','Prompt to turn ideas into digital products','Prompt to build a marketing strategy','Prompt to automate your business workflow','Prompt to write high-converting captions','Prompt to validate a product idea','Prompt to create a sales funnel','Prompt to write your email sequence','Prompt to build your brand voice'];
+const HASHTAGS_BANK=['#aiprompts #chatgpttips #contentcreation #digitalproducts #promptengineering','#aiworkflow #promptengineering #creatoreconomy #onlinebusiness #contentcreator','#aibusiness #onlineincome #contentmarketing #chatgpt #artificialintelligence','#entrepreneurmindset #aiassistant #productivity #digitalmarketing #socialmediatips'];
+
+let curReel=1, curScene=0, isPlaying=false, playTimeout=null, curAccent='#F5A623';
+let doneReels=new Set(), curCat='All', curSearch='';
+let vfxState={type:true,zoom:true,cursor:true,hl:true};
+let typingTimeout=null;
+
+/* ══ INIT ══ */
+window.addEventListener('DOMContentLoaded',()=>{
+  buildGrid(); buildScenes(); buildLib(); loadReel(1); updateClock();
+  setInterval(updateClock,30000);
+});
+
+function updateClock(){const n=new Date();document.getElementById('clockEl').textContent=n.getHours()+':'+String(n.getMinutes()).padStart(2,'0');}
+
+/* ══ GRID ══ */
+function buildGrid(){
+  const g=document.getElementById('reelGrid');
+  for(let i=1;i<=50;i++){
+    const b=document.createElement('button');
+    b.className='rb'+(i===1?' active':''); b.id='rb'+i;
+    b.textContent=String(i).padStart(2,'0');
+    b.onclick=()=>loadReel(i); g.appendChild(b);
+  }
+}
+
+/* ══ LIBRARY ══ */
+function buildLib(){
+  const el=document.getElementById('ideaScroll'); el.innerHTML='';
+  const q=curSearch.toLowerCase();
+  IDEAS.forEach(idea=>{
+    if(curCat!=='All'&&idea.cat!==curCat) return;
+    if(q&&!idea.hook.toLowerCase().includes(q)&&!idea.cat.toLowerCase().includes(q)) return;
+    const row=document.createElement('div');
+    const c=CAT_COLORS[idea.cat]||'#F5A623';
+    const isDone=doneReels.has(idea.id);
+    row.className='irow'+(curReel===idea.id?' loaded':'')+(isDone?' done':'');
+    row.id='ir'+idea.id;
+    row.innerHTML=`<div class="ir-n">${String(idea.id).padStart(2,'0')}</div>
+      <div class="ir-body">
+        <div class="ir-hook">${idea.hook}</div>
+        <span class="ir-cat" style="background:${c}18;color:${c};border:1px solid ${c}30">${idea.cat}</span>
+      </div>
+      <div class="ir-tick" style="color:${isDone?'#22C55E':'rgba(255,255,255,.1)'}">${isDone?'✓':'○'}</div>`;
+    row.onclick=()=>loadReel(idea.id);
+    el.appendChild(row);
+  });
+}
+
+function setCat(cat,btn){
+  curCat=cat;
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); buildLib();
+}
+function filterLib(){curSearch=document.getElementById('searchBox').value; buildLib();}
+
+/* ══ LOAD REEL ══ */
+function loadReel(n){
+  curReel=n; const d=IDEAS[n-1];
+  document.querySelectorAll('.rb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('rb'+n).classList.add('active');
+  // Fields
+  document.getElementById('fHook').value=d.hook;
+  document.getElementById('fSub').value="There's a smarter way.";
+  document.getElementById('fProbStmt').value=d.prob;
+  document.getElementById('fProbBody').value=d.probBody;
+  document.getElementById('fPrompt').value=d.prompt;
+  document.getElementById('fCat').value=d.cat.toUpperCase();
+  document.getElementById('fResHl').value=d.result;
+  document.getElementById('fResItems').value=d.items.join('\n');
+  document.getElementById('fCtaKw').value='Comment PROMPTS';
+  document.getElementById('fCtaSub').value="and I'll send you my FREE AI Starter Kit.";
+  setAccDirect(d.accent);
+  document.getElementById('icName').textContent=`Reel ${String(n).padStart(2,'0')} — ${d.cat}`;
+  document.getElementById('icN').textContent=String(n).padStart(2,'0');
+  buildLib(); jumpTo(0); renderPrev();
+}
+
+/* ══ MARK DONE / NEXT ══ */
+function markDone(){
+  doneReels.add(curReel);
+  document.getElementById('rb'+curReel).classList.add('done');
+  updateProg(); buildLib(); nextReel();
+}
+function nextReel(){loadReel(curReel<50?curReel+1:1);}
+function updateProg(){
+  const n=doneReels.size,pct=Math.round(n/50*100);
+  document.getElementById('doneN').textContent=n;
+  document.getElementById('leftN').textContent=50-n;
+  document.getElementById('progFill').style.width=Math.max(n/50*100,.5)+'%';
+  document.getElementById('pctLbl').textContent=pct+'%';
+  document.getElementById('libDone').textContent=n;
+  document.getElementById('libLeft').textContent=50-n;
+  document.getElementById('libPct').textContent=pct+'%';
+}
+
+/* ══ PATTERNS / ACCENT / CTA ══ */
+function setPat(i,btn){
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel');
+  document.getElementById('fHook').value=HOOK_PATS[i]; renderPrev();
+}
+function setAcc(c,el){
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('sel')); el.classList.add('sel');
+  curAccent=c; renderPrev();
+}
+function setAccDirect(c){
+  curAccent=c;
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.toggle('sel',s.title===colorName(c)));
+}
+function colorName(c){return{'#F5A623':'Amber','#00D4FF':'Cyan','#A855F7':'Purple','#FF4757':'Red','#22C55E':'Green'}[c]||'';}
+function setCTA(v,el){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel')); el.classList.add('sel');
+  document.getElementById('fCtaKw').value=v; renderPrev();
+}
+function toggleSc(bid,bdy){
+  const b=document.getElementById(bid),d=document.getElementById(bdy);
+  b.classList.toggle('sopen'); d.style.display=b.classList.contains('sopen')?'block':'none';
+}
+
+/* ══ VISUAL FX ══ */
+function toggleFX(key,el){
+  vfxState[key]=!vfxState[key];
+  el.classList.toggle('on',vfxState[key]);
+}
+
+/* ══ BUILD PHONE SCENES ══ */
+function buildScenes(){
+  document.getElementById('sceneVp').innerHTML=`
+    <div class="sc sc-hook vis" id="sc0">
+      <div class="blob" style="width:140px;height:140px;top:-40px;left:-40px;animation:floatA 7s ease-in-out infinite;"></div>
+      <div class="blob" style="width:90px;height:90px;bottom:-25px;right:-25px;animation:floatB 9s ease-in-out infinite;"></div>
+      <div class="sc-badge" id="ph_cat">CONTENT STRATEGY</div>
+      <div class="sc-hl" id="ph_hl" style="font-size:32px;"></div>
+      <div class="sc-sub" id="ph_sub"></div>
+      <div class="sc-wm"><span class="a">PROMPT</span><span class="b">AIDER</span></div>
+    </div>
+    <div class="sc sc-prob" id="sc1">
+      <div class="blob" style="width:120px;height:120px;top:-35px;right:-35px;background:rgba(255,71,87,.18);animation:floatA 8s ease-in-out infinite;"></div>
+      <div class="sc-ptag" style="color:var(--red);">THE PROBLEM</div>
+      <div class="sc-pstmt" id="ph_pstmt" style="font-size:20px;color:#fff;"></div>
+      <div class="sc-pdiv" id="ph_pdiv" style="background:var(--red);"></div>
+      <div class="sc-pbody" id="ph_pbody"></div>
+    </div>
+    <div class="sc sc-prompt" id="sc2">
+      <div class="blob" style="width:120px;height:120px;top:-35px;right:-35px;background:rgba(0,212,255,.15);animation:floatA 8s ease-in-out infinite;"></div>
+      <div class="sc-prompt-tag" id="ph_pcat" style="color:var(--cyan);">COPY THIS PROMPT →</div>
+      <div class="sc-prompt-intro">Use this instead:</div>
+      <div class="prompt-terminal" id="promptTerminal" onclick="openCopyModal()" style="cursor:pointer;">
+        <div class="highlight-box" id="hlBox"></div>
+        <pre class="prompt-typed" id="ph_ptxt"></pre><span class="cursor"></span>
+        <div style="margin-top:8px;padding:4px 8px;border-radius:4px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);font-family:'DM Mono',monospace;font-size:8px;color:rgba(0,212,255,.7);letter-spacing:2px;text-align:center;text-transform:uppercase;">📋 Tap to Copy + Get Instagram Caption</div>
+      </div>
+    </div>
+    <div class="sc sc-result" id="sc3">
+      <div class="blob" style="width:120px;height:120px;top:-35px;left:-35px;background:rgba(34,197,94,.15);animation:floatA 9s ease-in-out infinite;"></div>
+      <div class="sc-rtag" style="color:var(--green);">THE RESULT</div>
+      <div class="sc-rhl" id="ph_rhl" style="font-size:24px;color:#fff;"></div>
+      <div class="sc-ritems" id="ph_ritems"></div>
+    </div>
+    <div class="sc sc-cta" id="sc4">
+      <div class="blob" style="width:140px;height:140px;top:-45px;right:-45px;animation:floatA 8s ease-in-out infinite;"></div>
+      <div class="blob" style="width:90px;height:90px;bottom:-30px;left:-30px;background:rgba(168,85,247,.12);animation:floatB 10s ease-in-out infinite;"></div>
+      <div class="sc-ctop" id="ph_ctop" style="color:var(--amber);">GET THE FREE KIT →</div>
+      <div class="sc-cq" style="font-size:24px;">WANT MORE<br>PROMPTS?</div>
+      <div class="sc-cbox pulse" id="ph_cbox">
+        <span class="sc-ckw" id="ph_ckw"></span>
+        <div class="sc-csub" id="ph_csub"></div>
+      </div>
+    </div>`;
+}
+
+/* ══ RENDER PREVIEW ══ */
+function renderPrev(){
+  const ac=curAccent;
+  // Hook blobs
+  const hb=document.querySelectorAll('#sc0 .blob');
+  if(hb[0])hb[0].style.background=ha(ac,.22);
+  if(hb[1])hb[1].style.background=ha(ac,.12);
+  // CTA blobs
+  const cb=document.querySelectorAll('#sc4 .blob');
+  if(cb[0])cb[0].style.background=ha(ac,.2);
+  // Badge
+  const cat=(document.getElementById('fCat').value||'').toUpperCase();
+  const badge=document.getElementById('ph_cat');
+  if(badge){badge.style.background=ha(ac,.15);badge.style.color=ac;badge.style.border=`1px solid ${ha(ac,.3)}`;badge.textContent=cat;}
+  // Hook
+  const hltxt=document.getElementById('fHook').value||'';
+  const phHl=document.getElementById('ph_hl');
+  if(phHl){phHl.innerHTML=hltxt.replace(/\n/g,'<br>');phHl.style.fontSize=hltxt.length>35?'24px':hltxt.length>24?'28px':'32px';}
+  const phSub=document.getElementById('ph_sub');
+  if(phSub)phSub.textContent=document.getElementById('fSub').value||'';
+  // Problem
+  const ps=document.getElementById('ph_pstmt');
+  const pb=document.getElementById('ph_pbody');
+  if(ps)ps.innerHTML=(document.getElementById('fProbStmt').value||'').replace(/\n/g,'<br>');
+  if(pb)pb.textContent=document.getElementById('fProbBody').value||'';
+  // Prompt (just static render; typing animation runs during playback)
+  const pt=document.getElementById('ph_ptxt');
+  if(pt)pt.textContent=document.getElementById('fPrompt').value||'';
+  // Result
+  const rh=document.getElementById('ph_rhl');
+  if(rh){rh.innerHTML=(document.getElementById('fResHl').value||'').replace(/\n/g,'<br>');rh.style.color=ac;}
+  const ri=document.getElementById('ph_ritems');
+  if(ri){
+    ri.innerHTML='';
+    (document.getElementById('fResItems').value||'').split('\n').filter(Boolean).forEach((line,i)=>{
+      const row=document.createElement('div'); row.className='sc-ri';
+      row.innerHTML=`<span class="sc-ri-ico" style="color:${ac}">✓</span><span class="sc-ri-txt">${line}</span>`;
+      ri.appendChild(row);
+    });
+  }
+  // CTA
+  const ckw=document.getElementById('fCtaKw').value||'';
+  const phCkw=document.getElementById('ph_ckw');
+  if(phCkw){phCkw.textContent=ckw;phCkw.style.color=ac;}
+  const phCtop=document.getElementById('ph_ctop');
+  if(phCtop)phCtop.style.color=ac;
+  const phCsub=document.getElementById('ph_csub');
+  if(phCsub)phCsub.textContent=document.getElementById('fCtaSub').value||'';
+  const cbox=document.getElementById('ph_cbox');
+  if(cbox){cbox.style.background=ha(ac,.1);cbox.style.border=`1px solid ${ha(ac,.3)}`;}
+}
+
+/* ══ VISUAL FX ENGINE ══ */
+
+// Typing animation for prompt scene
+function runTypingFX(){
+  if(!vfxState.type) return;
+  const fullText=document.getElementById('fPrompt').value||'';
+  const el=document.getElementById('ph_ptxt');
+  if(!el) return;
+  el.textContent=''; let i=0;
+  clearTimeout(typingTimeout);
+  function typeNext(){
+    if(i<fullText.length){
+      el.textContent+=fullText[i]; i++;
+      typingTimeout=setTimeout(typeNext, i<20?60:30);
+    }
+  }
+  typeNext();
+}
+
+// Highlight box animation
+function runHighlightFX(){
+  if(!vfxState.hl) return;
+  const term=document.getElementById('promptTerminal');
+  const hl=document.getElementById('hlBox');
+  if(!term||!hl) return;
+  setTimeout(()=>{
+    const h=term.offsetHeight;
+    hl.style.top='8px'; hl.style.left='8px';
+    hl.style.width=(term.offsetWidth-16)+'px'; hl.style.height='22px';
+    hl.classList.add('show');
+    setTimeout(()=>{
+      hl.style.top=(h/2-11)+'px'; hl.style.height='22px';
+      setTimeout(()=>hl.classList.remove('show'),800);
+    },900);
+  },2200);
+}
+
+// Fake cursor movement
+function runCursorFX(){
+  if(!vfxState.cursor) return;
+  const cur=document.getElementById('fakeCursor');
+  const phone=document.getElementById('phoneEl');
+  if(!cur||!phone) return;
+  cur.style.opacity='1';
+  const positions=[
+    {left:'40%',top:'55%'},{left:'60%',top:'60%'},
+    {left:'30%',top:'65%'},{left:'55%',top:'55%'}
+  ];
+  let pi=0;
+  function moveCursor(){
+    if(pi>=positions.length){cur.style.opacity='0';return;}
+    cur.style.left=positions[pi].left; cur.style.top=positions[pi].top; pi++;
+    setTimeout(moveCursor,500);
+  }
+  setTimeout(moveCursor,500);
+}
+
+// Zoom FX on result items
+function runZoomFX(){
+  if(!vfxState.zoom) return;
+  const items=document.querySelectorAll('#ph_ritems .sc-ri');
+  items.forEach((item,i)=>{
+    item.style.animation='none'; item.style.opacity='0';
+    setTimeout(()=>{item.classList.add('zoom'); item.style.opacity='1';},i*180);
+  });
+}
+
+/* ══ SCENE NAVIGATION ══ */
+
+// Internal: show a scene without stopping playback
+function showScene(n, fx){
+  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('vis'));
+  document.getElementById('sc'+n).classList.add('vis');
+  curScene=n; updateSceneUI();
+  const tb=document.getElementById('timerBar');
+  tb.style.transition='none'; tb.style.width='0%';
+  void tb.offsetWidth; // force reflow
+  if(fx){
+    if(n===2){runTypingFX(); runHighlightFX(); runCursorFX();}
+    if(n===3){runZoomFX();}
+  }
+}
+
+// Manual scene jump — stops playback first
+function jumpTo(n){ stopPlay(); showScene(n, true); }
+
+function updateSceneUI(){
+  document.querySelectorAll('.sdot').forEach((d,i)=>d.classList.toggle('on',i===curScene));
+  for(let i=0;i<5;i++){const b=document.getElementById('sj'+i);if(b)b.classList.toggle('cur',i===curScene);}
+  document.getElementById('scTimerLbl').textContent=SCENE_TIMINGS[curScene];
+  document.getElementById('icScene').textContent=SCENE_NAMES[curScene]+' ('+SCENE_TIMINGS[curScene]+')';
+  document.getElementById('icScene').style.color=['var(--amber)','var(--red)','var(--cyan)','var(--green)','var(--purple)'][curScene];
+}
+
+/* ══ PLAYBACK — fixed: startPlay no longer calls jumpTo ══ */
+function togglePlay(){isPlaying?stopPlay():startPlay();}
+
+function startPlay(){
+  isPlaying=true;
+  document.getElementById('playBtn').textContent='⏸';
+  document.getElementById('playBtn').classList.add('playing');
+  showScene(0, true);          // show scene 0 without killing isPlaying
+  setTimeout(runScene, 80);    // start timer after first scene renders
+}
+
+function stopPlay(){
+  isPlaying=false;
+  clearTimeout(playTimeout);
+  document.getElementById('playBtn').textContent='▶';
+  document.getElementById('playBtn').classList.remove('playing');
+}
+
+function runScene(){
+  if(!isPlaying) return;
+  const dur=SCENE_DUR[curScene];
+  const tb=document.getElementById('timerBar');
+  tb.style.transition='none'; tb.style.width='0%';
+  void tb.offsetWidth;
+  tb.style.transition=`width ${dur}ms linear`; tb.style.width='100%';
+
+  playTimeout=setTimeout(()=>{
+    if(!isPlaying) return;
+    const next=curScene+1;
+    if(next>=5){
+      // Finished — reset
+      isPlaying=false;
+      document.getElementById('playBtn').textContent='▶';
+      document.getElementById('playBtn').classList.remove('playing');
+      const tb2=document.getElementById('timerBar');
+      tb2.style.transition='none'; tb2.style.width='0%';
+      showScene(0, false);
+      return;
+    }
+    showScene(next, true);
+    setTimeout(runScene, 60);
+  }, dur);
+}
+
+/* ══ INTERACTIVE COPY-PROMPT OVERLAY ══
+   Shown on the Prompt scene (sc2) — tap the prompt box in the phone
+   to open a full-screen overlay with copy + Instagram caption ready  */
+
+function openCopyModal(){
+  const promptText = document.getElementById('fPrompt').value || '';
+  const hook       = document.getElementById('fHook').value   || '';
+  const ctaKw      = document.getElementById('fCtaKw').value  || 'Comment PROMPTS';
+  const caption =
+`${hook}
+
+Most people use AI randomly and get bad results.
+
+Try this exact prompt 👇
+
+${promptText}
+
+${ctaKw} and I'll send you my FREE AI Starter Kit 🎁
+
+#aiprompts #chatgpttips #contentcreation #promptengineering #aiworkflow`;
+
+  const ac = curAccent;
+  const existing = document.getElementById('copyModal');
+  if(existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id='copyModal';
+  modal.style.cssText=`
+    position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);
+    backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;
+    padding:20px;
+  `;
+
+  modal.innerHTML=`
+    <div style="
+      background:#070C1E;border:1px solid ${ac}40;border-radius:16px;
+      width:100%;max-width:520px;max-height:90vh;overflow-y:auto;
+      box-shadow:0 0 60px ${ac}20;
+    ">
+      <!-- Header -->
+      <div style="
+        padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07);
+        display:flex;align-items:center;justify-content:space-between;
+      ">
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:${ac}">COPY PROMPT</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.25);letter-spacing:3px;font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;">Ready to post on Instagram Reels</div>
+        </div>
+        <button onclick="document.getElementById('copyModal').remove()" style="
+          background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+          color:rgba(255,255,255,.4);border-radius:6px;padding:5px 10px;cursor:pointer;
+          font-size:12px;font-family:'DM Mono',monospace;
+        ">✕ Close</button>
+      </div>
+
+      <!-- Tab row -->
+      <div style="display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.07);">
+        <button id="tab_prompt" onclick="switchTab('prompt')" style="
+          flex:1;padding:10px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+          font-family:'DM Mono',monospace;border:none;cursor:pointer;transition:all .2s;
+          background:${ac}18;color:${ac};border-bottom:2px solid ${ac};
+        ">📋 Prompt</button>
+        <button id="tab_caption" onclick="switchTab('caption')" style="
+          flex:1;padding:10px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+          font-family:'DM Mono',monospace;border:none;cursor:pointer;transition:all .2s;
+          background:transparent;color:rgba(255,255,255,.3);border-bottom:2px solid transparent;
+        ">✍ Caption</button>
+        <button id="tab_hashtags" onclick="switchTab('hashtags')" style="
+          flex:1;padding:10px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+          font-family:'DM Mono',monospace;border:none;cursor:pointer;transition:all .2s;
+          background:transparent;color:rgba(255,255,255,.3);border-bottom:2px solid transparent;
+        ">🏷 Tags</button>
+      </div>
+
+      <!-- Tab: Prompt -->
+      <div id="panel_prompt" style="padding:16px 20px;">
+        <div style="font-size:9px;color:rgba(255,255,255,.2);letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:8px;">AI Prompt — copy & paste into ChatGPT</div>
+        <div style="position:relative;">
+          <pre id="modalPromptText" style="
+            background:rgba(0,0,0,.5);border:1px solid ${ac}30;border-radius:8px;
+            padding:14px;font-family:'DM Mono',monospace;font-size:11px;
+            color:rgba(0,212,255,.85);line-height:1.9;white-space:pre-wrap;
+            cursor:pointer;transition:border-color .2s;
+          " onclick="copyText('prompt')">${promptText}</pre>
+          <div style="position:absolute;top:8px;right:8px;">
+            <button id="copyPromptBtn" onclick="copyText('prompt')" style="
+              background:${ac}20;border:1px solid ${ac}40;color:${ac};
+              border-radius:5px;padding:4px 10px;font-size:9px;font-weight:700;
+              letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+              font-family:'DM Mono',monospace;
+            ">Copy</button>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding:10px 12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:6px;">
+          <div style="font-size:9px;color:rgba(255,255,255,.2);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:6px;">How to use on Instagram Reels</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.9;">
+            1. Copy the prompt above<br>
+            2. Open ChatGPT and paste it in<br>
+            3. Replace [brackets] with your niche<br>
+            4. Screenshot or screen-record the output<br>
+            5. Add to your Reel as a text overlay or B-roll
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Caption -->
+      <div id="panel_caption" style="padding:16px 20px;display:none;">
+        <div style="font-size:9px;color:rgba(255,255,255,.2);letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:8px;">Instagram Caption — paste into your post</div>
+        <div style="position:relative;">
+          <textarea id="captionEditArea" style="
+            width:100%;background:rgba(0,0,0,.5);border:1px solid rgba(168,85,247,.3);border-radius:8px;
+            padding:14px;font-family:'DM Mono',monospace;font-size:11px;
+            color:rgba(255,255,255,.75);line-height:1.9;resize:vertical;min-height:220px;
+            outline:none;
+          ">${caption}</textarea>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button onclick="copyText('caption')" style="
+            flex:1;padding:9px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);
+            color:#A855F7;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:2px;
+            text-transform:uppercase;cursor:pointer;font-family:'DM Mono',monospace;
+          " id="copyCaptionBtn">📋 Copy Caption</button>
+          <button onclick="regenCaption()" style="
+            padding:9px 14px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);
+            color:#00D4FF;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:2px;
+            text-transform:uppercase;cursor:pointer;font-family:'DM Mono',monospace;
+          ">↺ Regen</button>
+        </div>
+        <div style="margin-top:10px;padding:10px 12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:6px;">
+          <div style="font-size:9px;color:rgba(255,255,255,.2);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:5px;">Instagram Post Steps</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.9;">
+            1. Copy this caption<br>
+            2. Open Instagram → New Reel<br>
+            3. Upload your screen-recording of the prompt<br>
+            4. Paste caption into the caption field<br>
+            5. Set comment auto-reply for the keyword trigger
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Hashtags -->
+      <div id="panel_hashtags" style="padding:16px 20px;display:none;">
+        <div style="font-size:9px;color:rgba(255,255,255,.2);letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:8px;">Hashtag Sets — tap to copy</div>
+        ${[
+          '#aiprompts #chatgpttips #contentcreation #digitalproducts #promptengineering',
+          '#aiworkflow #creatoreconomy #onlinebusiness #contentcreator #artificialintelligence',
+          '#aibusiness #onlineincome #contentmarketing #chatgpt #socialmediatips',
+          '#entrepreneurmindset #aiassistant #productivity #digitalmarketing #chatgptprompts',
+          '#promptaider #aitools #creatortips #makemoneyonline #passiveincome'
+        ].map((set,i)=>`
+          <div onclick="copyHashtags(this,'${set}')" style="
+            padding:10px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);
+            border-radius:6px;cursor:pointer;transition:all .2s;margin-bottom:6px;
+            font-family:'DM Mono',monospace;font-size:10px;color:rgba(168,85,247,.8);line-height:1.8;
+          " onmouseover="this.style.borderColor='rgba(168,85,247,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'"
+          >${set}<div style="font-size:8px;color:rgba(255,255,255,.15);margin-top:3px;letter-spacing:2px;">TAP TO COPY</div></div>
+        `).join('')}
+      </div>
+
+      <!-- Footer status -->
+      <div id="modalStatus" style="
+        padding:10px 20px;border-top:1px solid rgba(255,255,255,.05);
+        font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.2);
+        text-align:center;min-height:34px;letter-spacing:2px;
+      ">Tap any section above to copy</div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e=>{ if(e.target===modal) modal.remove(); });
+}
+
+function switchTab(tab){
+  ['prompt','caption','hashtags'].forEach(t=>{
+    const panel=document.getElementById('panel_'+t);
+    const btn=document.getElementById('tab_'+t);
+    if(!panel||!btn) return;
+    const ac=curAccent;
+    if(t===tab){
+      panel.style.display='block';
+      btn.style.background=ac+'18'; btn.style.color=ac; btn.style.borderBottom=`2px solid ${ac}`;
+    } else {
+      panel.style.display='none';
+      btn.style.background='transparent'; btn.style.color='rgba(255,255,255,.3)'; btn.style.borderBottom='2px solid transparent';
+    }
+  });
+}
+
+function copyText(type){
+  let text='';
+  if(type==='prompt') text=document.getElementById('modalPromptText').textContent;
+  if(type==='caption') text=document.getElementById('captionEditArea').value;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById(type==='prompt'?'copyPromptBtn':'copyCaptionBtn');
+    if(btn){const orig=btn.textContent; btn.textContent='✓ Copied!'; setTimeout(()=>btn.textContent=orig,1800);}
+    setModalStatus('✓ Copied to clipboard — ready to paste into Instagram');
+  }).catch(()=>{
+    // Fallback for non-https
+    const ta=document.createElement('textarea'); ta.value=text;
+    ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    setModalStatus('✓ Copied to clipboard');
+  });
+}
+
+function copyHashtags(el, tags){
+  navigator.clipboard.writeText(tags).catch(()=>{
+    const ta=document.createElement('textarea'); ta.value=tags;
+    ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+  const orig=el.querySelector('div').textContent;
+  el.querySelector('div').textContent='✓ COPIED!';
+  setTimeout(()=>el.querySelector('div').textContent=orig, 1800);
+  setModalStatus('✓ Hashtags copied — paste at end of caption');
+}
+
+function regenCaption(){
+  const hook=document.getElementById('fHook').value||'';
+  const prompt=document.getElementById('fPrompt').value||'';
+  const ctaKw=document.getElementById('fCtaKw').value||'Comment PROMPTS';
+  const templates=[
+    `${hook}\n\nMost creators use AI wrong. Here's the structured way:\n\n${prompt}\n\n${ctaKw} and I'll send you my FREE AI Starter Kit 🎁\n\n#aiprompts #chatgpttips #contentcreation #promptengineering`,
+    `Stop guessing. Start prompting.\n\n${hook}\n\nUse this:\n\n${prompt}\n\n${ctaKw} 👇 Free Starter Kit waiting for you.\n\n#aitools #chatgpt #contentcreator #aiprompts #creatortips`,
+    `This changes everything 👇\n\n${hook}\n\nThe exact prompt:\n\n${prompt}\n\n${ctaKw} and I'll DM you the full kit for free 🔥\n\n#promptaider #chatgpttips #aibusiness #digitalproducts #contentmarketing`
+  ];
+  document.getElementById('captionEditArea').value=templates[Math.floor(Math.random()*templates.length)];
+  setModalStatus('↺ Caption regenerated — edit and copy');
+}
+
+function setModalStatus(msg){
+  const el=document.getElementById('modalStatus');
+  if(el){el.textContent=msg; el.style.color='rgba(34,197,94,.7)'; setTimeout(()=>{if(el)el.style.color='rgba(255,255,255,.2)';},3000);}
+}
+
+/* ══ GENERATORS (Studio 3 functions) ══ */
+function genHook(){
+  const h=HOOKS_BANK[Math.floor(Math.random()*HOOKS_BANK.length)];
+  document.getElementById('fHook').value=h; renderPrev();
+  showGenOut(h);
+}
+function genIdea(){
+  const idea=REEL_IDEAS_BANK[Math.floor(Math.random()*REEL_IDEAS_BANK.length)];
+  const p=`Act as a content strategist.\n\n${idea}\nfor [your niche].`;
+  document.getElementById('fPrompt').value=p; renderPrev();
+  showGenOut(p);
+}
+function genCaption(){
+  const hook=document.getElementById('fHook').value||'[hook]';
+  const prompt=document.getElementById('fPrompt').value||'[prompt]';
+  const caption=`${hook}\n\nMost people use AI randomly and get bad results.\n\nTry this prompt:\n\n${prompt}\n\nComment PROMPTS and I'll send my free AI Starter Kit.`;
+  showGenOut(caption);
+}
+function genTags(){
+  const tags=HASHTAGS_BANK[Math.floor(Math.random()*HASHTAGS_BANK.length)];
+  const tagEl=document.getElementById('tagOut');
+  tagEl.textContent=tags; tagEl.classList.add('show');
+  document.getElementById('genOut').classList.remove('show');
+}
+function showGenOut(text){
+  const el=document.getElementById('genOut');
+  el.textContent=text; el.classList.add('show');
+  document.getElementById('tagOut').classList.remove('show');
+}
+
+/* ══ EXPORT SCENES (Studio 3 function) ══ */
+function exportScenes(){
+  const scenes=['sc0','sc1','sc2','sc3','sc4'];
+  let idx=0;
+  function captureNext(){
+    if(idx>=scenes.length) return;
+    document.querySelectorAll('.sc').forEach(s=>s.classList.remove('vis'));
+    document.getElementById(scenes[idx]).classList.add('vis');
+    setTimeout(()=>{
+      html2canvas(document.getElementById('phoneEl'),{scale:2,useCORS:true}).then(canvas=>{
+        const a=document.createElement('a');
+        a.download=`promptaider_reel${String(curReel).padStart(2,'0')}_scene${idx+1}.png`;
+        a.href=canvas.toDataURL('image/png');
+        a.click();
+        idx++; setTimeout(captureNext,400);
+      });
+    },300);
+  }
+  captureNext();
+}
+
+/* ══ UTILS ══ */
+function ha(hex,a){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+</script>
+</body>
+</html>
