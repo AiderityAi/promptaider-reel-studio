@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PromptAider Reel Studio 4.0</title>
+<title>PromptAider Reel Studio 4.0 — 100 Reels</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
@@ -342,8 +342,8 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
 <div class="topbar">
   <div class="wordmark"><span class="a">Prompt</span><span class="b">Aider</span><em>REEL STUDIO 4.0</em></div>
   <div class="topbar-pills">
-    <div class="pill pill-a">50 Reels</div>
-    <div class="pill pill-c">4 Categories</div>
+    <div class="pill pill-a">100 Reels</div>
+    <div class="pill pill-c">9 Categories</div>
     <div class="pill pill-g">Visual FX</div>
   </div>
 </div>
@@ -357,16 +357,21 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
     <input class="search" id="searchBox" placeholder="Search 50 ideas..." oninput="filterLib()">
   </div>
   <div class="cat-strip" id="catStrip">
-    <button class="ctab on" onclick="setCat('All',this)">All 50</button>
+    <button class="ctab on" onclick="setCat('All',this)">All 100</button>
     <button class="ctab" onclick="setCat('Creator Content',this)">Creator (1–15)</button>
     <button class="ctab" onclick="setCat('Monetization',this)">Monetize (16–30)</button>
     <button class="ctab" onclick="setCat('AI Workflow',this)">Workflow (31–40)</button>
     <button class="ctab" onclick="setCat('Professional',this)">Pro (41–50)</button>
+    <button class="ctab" onclick="setCat('Email Marketing',this)">Email (51–60)</button>
+    <button class="ctab" onclick="setCat('Social Growth',this)">Social (61–70)</button>
+    <button class="ctab" onclick="setCat('Personal Brand',this)">Brand (71–80)</button>
+    <button class="ctab" onclick="setCat('AI Prompting',this)">AI Tips (81–90)</button>
+    <button class="ctab" onclick="setCat('Launch &amp; Sales',this)">Launch (91–100)</button>
   </div>
   <div class="idea-scroll" id="ideaScroll"></div>
   <div class="lib-foot">
     <div class="lfs"><div class="lfs-n" style="color:var(--amber)" id="libDone">0</div><div class="lfs-l">Done</div></div>
-    <div class="lfs"><div class="lfs-n" style="color:var(--cyan)" id="libLeft">50</div><div class="lfs-l">Left</div></div>
+    <div class="lfs"><div class="lfs-n" style="color:var(--cyan)" id="libLeft">100</div><div class="lfs-l">Left</div></div>
     <div class="lfs"><div class="lfs-n" style="color:var(--green)" id="libPct">0%</div><div class="lfs-l">Complete</div></div>
   </div>
 </div>
@@ -386,8 +391,8 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
     <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
     <div class="prog-nums">
       <div class="pn"><div class="pn-v" style="color:var(--amber)" id="doneN">0</div><div class="pn-l">Done</div></div>
-      <div class="pn"><div class="pn-v" style="color:var(--cyan)" id="leftN">50</div><div class="pn-l">Left</div></div>
-      <div class="pn"><div class="pn-v" style="color:rgba(255,255,255,.25)">50</div><div class="pn-l">Total</div></div>
+      <div class="pn"><div class="pn-v" style="color:var(--cyan)" id="leftN">100</div><div class="pn-l">Left</div></div>
+      <div class="pn"><div class="pn-v" style="color:rgba(255,255,255,.25)">100</div><div class="pn-l">Total</div></div>
     </div>
   </div>
 
@@ -887,9 +892,320 @@ const IDEAS=[
    probBody:'Growth without a strategy is just luck. This prompt identifies your growth levers, priority actions, and the metrics that tell you it is working.',
    prompt:'Act as a growth strategist.\n\nBuild a growth strategy\nfor [business or creator].',
    result:'GROWTH STRATEGY DONE.',items:['Growth levers identified','Priority actions set','Metrics + goals defined']},
+
+  /* ── EMAIL MARKETING 51-60 ── */
+  {id:51, cat:'Email Marketing',accent:'#FF4757',
+   hook:'This prompt writes your entire email sequence.',
+   prob:'Most creators collect emails and then never send anything.',
+   probBody:"An email list is your most valuable asset — but only if you use it. This prompt writes a 7-email welcome sequence in one go.",
+   prompt:'Act as an email strategist.\n\nWrite a 7-email welcome sequence\nfor [niche] subscribers.',
+   result:'7-EMAIL SEQUENCE DONE.',items:['7 emails fully written','Welcome to conversion flow','Builds trust and sells']},
+  {id:52, cat:'Email Marketing',accent:'#FF4757',
+   hook:'This writes subject lines people actually open.',
+   prob:'A great email is worthless if nobody opens it.',
+   probBody:"Most creators write boring subject lines. The open rate dies. Revenue dies with it. This prompt generates subject lines that get clicked.",
+   prompt:'Act as a subject line specialist.\n\nWrite 15 high-open subject lines\nfor [niche] email list.',
+   result:'15 SUBJECT LINES. TEST NOW.',items:['15 curiosity-driven lines','Open-rate optimized','Split-test ready']},
+  {id:53, cat:'Email Marketing',accent:'#FF4757',
+   hook:'This writes a sales email that converts.',
+   prob:"Most sales emails feel pushy. People unsubscribe instead of buying.",
+   probBody:'A sales email should feel like a recommendation from a trusted friend. This prompt writes the version people actually want to read.',
+   prompt:'Act as an email copywriter.\n\nWrite a sales email for [offer]\nthat converts without being pushy.',
+   result:'SALES EMAIL WRITTEN.',items:['Soft sell structure','Objections handled early','Clear CTA at the end']},
+  {id:54, cat:'Email Marketing',accent:'#FF4757',
+   hook:'This builds a 30-day email content plan.',
+   prob:'Most creators send emails randomly. Random equals ignored.',
+   probBody:'Consistency builds trust. Trust builds buyers. This prompt maps 30 days of emails so you never wonder what to send.',
+   prompt:'Act as an email planner.\n\nCreate a 30-day email content plan\nfor [niche] audience.',
+   result:'30 DAYS OF EMAILS MAPPED.',items:['Every email planned','Value + sell balance set','Themes per week']},
+  {id:55, cat:'Email Marketing',accent:'#FF4757',
+   hook:'This writes a re-engagement email campaign.',
+   prob:"Your dead subscribers are money you have already earned once. You can earn it again.",
+   probBody:"Most creators ignore inactive subscribers. This prompt writes a 3-email sequence that wakes them up or cleans them out.",
+   prompt:'Act as an email strategist.\n\nWrite a 3-email re-engagement\ncampaign for cold subscribers.',
+   result:'LIST RE-ENGAGED.',items:['3-email sequence done','Win-back offer included','Clean list strategy']},
+  {id:56, cat:'Email Marketing',accent:'#FF4757',
+   hook:'This creates a lead magnet that builds your list.',
+   prob:'Most creators offer generic freebies nobody wants.',
+   probBody:'A lead magnet only works if it solves a specific, urgent problem. This prompt designs the concept, title, and delivery.',
+   prompt:'Act as a lead magnet designer.\n\nCreate a lead magnet concept\nfor [niche] that builds an email list.',
+   result:'LEAD MAGNET DESIGNED.',items:['Concept + title created','Delivery format chosen','High opt-in potential']},
+  {id:57, cat:'Email Marketing',accent:'#FF4757',
+   hook:'This turns your email list into a revenue machine.',
+   prob:'Most people treat email as a broadcast tool. Not a sales engine.',
+   probBody:'Email has the highest ROI of any marketing channel. This prompt builds the monetization strategy to extract that value.',
+   prompt:'Act as an email monetization expert.\n\nBuild an email revenue strategy\nfor [niche] list.',
+   result:'EMAIL REVENUE SYSTEM BUILT.',items:['3 monetization paths','Automation mapped','Evergreen income model']},
+  {id:58, cat:'Email Marketing',accent:'#FF4757',
+   hook:'This writes a product launch email sequence.',
+   prob:'Most product launches fail because the email sequence is weak.',
+   probBody:'A launch sequence is the difference between a $200 launch and a $20,000 launch. This prompt writes all 5 emails.',
+   prompt:'Act as a launch copywriter.\n\nWrite a 5-email launch sequence\nfor [product].',
+   result:'LAUNCH SEQUENCE DONE.',items:['5 launch emails written','Urgency + value built in','Abandoned cart follow-up']},
+  {id:59, cat:'Email Marketing',accent:'#FF4757',
+   hook:'This writes a weekly newsletter people actually share.',
+   prob:"Most newsletters get opened once and forgotten. The best ones get forwarded.",
+   probBody:'A shareable newsletter has a clear format, a strong insight, and one thing people want to pass on. This prompt writes that.',
+   prompt:'Act as a newsletter writer.\n\nWrite a weekly newsletter issue\nthat readers will share.',
+   result:'NEWSLETTER PEOPLE SHARE.',items:['Shareable insight section','Clear + scannable format','Built-in viral hook']},
+  {id:60, cat:'Email Marketing',accent:'#FF4757',
+   hook:'This builds an automated email funnel.',
+   prob:'Manual email sending means you only earn when you remember to send.',
+   probBody:'An automated email funnel works while you sleep. This prompt maps the entire automation from opt-in to purchase.',
+   prompt:'Act as an automation strategist.\n\nBuild a full automated email funnel\nfor [offer].',
+   result:'EMAIL FUNNEL AUTOMATED.',items:['Full automation mapped','Trigger + sequence logic','Earn while you sleep']},
+
+  /* ── SOCIAL MEDIA GROWTH 61-70 ── */
+  {id:61, cat:'Social Growth',accent:'#F5A623',
+   hook:'This prompt grows your Instagram in 30 days.',
+   prob:"Most creators post consistently but do not grow. Posting alone is not a strategy.",
+   probBody:'Growth requires the right content mix, posting cadence, and engagement loops. This prompt builds your 30-day growth system.',
+   prompt:'Act as a social media growth expert.\n\nBuild a 30-day Instagram growth plan\nfor [niche] creator.',
+   result:'30-DAY GROWTH PLAN READY.',items:['Daily action steps','Content mix mapped','Engagement loops built']},
+  {id:62, cat:'Social Growth',accent:'#F5A623',
+   hook:'This writes your Instagram bio that converts.',
+   prob:'Your bio has 3 seconds to tell people why they should follow you.',
+   probBody:"Most bios are forgettable. A great bio answers who you help, what you do, and what to do next. This prompt writes yours.",
+   prompt:'Act as a conversion copywriter.\n\nWrite 5 Instagram bio versions\nfor [niche] creator.',
+   result:'5 BIOS WRITTEN. PICK ONE.',items:['5 bio options ready','Clear value proposition','Follow + click optimized']},
+  {id:63, cat:'Social Growth',accent:'#F5A623',
+   hook:'This creates a viral TikTok series.',
+   prob:'One viral video is luck. A series is a system.',
+   probBody:'The accounts that grow fastest post series, not random content. This prompt designs a 10-part TikTok series for your niche.',
+   prompt:'Act as a TikTok strategist.\n\nDesign a 10-part viral series\nfor [niche].',
+   result:'10-PART SERIES MAPPED.',items:['10 episode concepts','Series hook designed','Built-in binge factor']},
+  {id:64, cat:'Social Growth',accent:'#F5A623',
+   hook:'This writes your YouTube Shorts script.',
+   prob:'YouTube Shorts get 70 billion views per day. Most creators are not on it.',
+   probBody:'Shorts that perform use a very specific structure. This prompt writes the script in the exact format the algorithm rewards.',
+   prompt:'Act as a Shorts scriptwriter.\n\nWrite a 60-second YouTube Shorts script\nfor [topic].',
+   result:'SHORTS SCRIPT DONE.',items:['60-second structure','Algorithm-optimized hook','Subscribe CTA built in']},
+  {id:65, cat:'Social Growth',accent:'#F5A623',
+   hook:'This builds a Pinterest strategy that drives traffic.',
+   prob:'Pinterest is the most ignored platform. It also drives the most consistent traffic.',
+   probBody:'Pinterest is a search engine, not a social network. This prompt builds the keyword strategy and pin content plan.',
+   prompt:'Act as a Pinterest strategist.\n\nBuild a Pinterest content strategy\nfor [niche].',
+   result:'PINTEREST STRATEGY READY.',items:['Keyword strategy built','Board structure mapped','Monthly pin plan done']},
+  {id:66, cat:'Social Growth',accent:'#F5A623',
+   hook:'This writes Reels scripts that get shared.',
+   prob:'Saves grow your profile. Shares grow it 10 times faster.',
+   probBody:"Shares happen when content makes someone say they need to send this. This prompt writes Reels in the exact format that triggers sharing.",
+   prompt:'Act as a viral Reel scriptwriter.\n\nWrite 5 shareable Reel scripts\nfor [niche].',
+   result:'5 SHAREABLE REELS SCRIPTED.',items:['5 complete scripts','Share-trigger structure','Hook to CTA mapped']},
+  {id:67, cat:'Social Growth',accent:'#F5A623',
+   hook:'This creates a LinkedIn content strategy.',
+   prob:"LinkedIn has the highest organic reach of any platform right now. Most creators ignore it.",
+   probBody:'The window for organic LinkedIn reach is open. This prompt builds the content strategy to take full advantage before it closes.',
+   prompt:'Act as a LinkedIn growth expert.\n\nCreate a LinkedIn content strategy\nfor [professional niche].',
+   result:'LINKEDIN STRATEGY DONE.',items:['Content pillars defined','Posting cadence set','Audience growth plan']},
+  {id:68, cat:'Social Growth',accent:'#F5A623',
+   hook:'This builds your Twitter thread strategy.',
+   prob:"Most people tweet into the void. Threads are how accounts blow up on X.",
+   probBody:'A viral thread needs a great hook, tight structure, and a clear payoff. This prompt maps your entire thread content strategy.',
+   prompt:'Act as a Twitter/X strategist.\n\nDesign a 30-day thread strategy\nfor [niche].',
+   result:'THREAD STRATEGY MAPPED.',items:['30-day plan built','Thread formats included','Follower growth system']},
+  {id:69, cat:'Social Growth',accent:'#F5A623',
+   hook:'This builds a content repurposing machine.',
+   prob:'Creating fresh content for every platform every day is impossible to sustain.',
+   probBody:'One piece of content should feed every platform. This prompt builds the exact system to repurpose one idea into 10 platform-native posts.',
+   prompt:'Act as a repurposing strategist.\n\nBuild a content repurposing system\nfrom [main content type].',
+   result:'REPURPOSING MACHINE BUILT.',items:['1 idea to 10 posts','Platform-native formats','Weekly system mapped']},
+  {id:70, cat:'Social Growth',accent:'#F5A623',
+   hook:'This writes a collaboration pitch that gets a yes.',
+   prob:'Most collaboration pitches are ignored because they lead with what you want, not what you offer.',
+   probBody:"A collab pitch that converts leads with value, not your follower count. This prompt writes the version that gets replied to.",
+   prompt:'Act as a partnership strategist.\n\nWrite a collaboration pitch\nfor [creator type + niche].',
+   result:'COLLAB PITCH WRITTEN.',items:['Value-first structure','Personalization hooks','Follow-up message included']},
+
+  /* ── PERSONAL BRAND 71-80 ── */
+  {id:71, cat:'Personal Brand',accent:'#A855F7',
+   hook:'This builds your complete personal brand strategy.',
+   prob:'Most people create content without a clear brand. Unclear brand means no loyalty.',
+   probBody:"Your personal brand is what people say about you when you are not in the room. This prompt designs the positioning, message, and look.",
+   prompt:'Act as a personal brand strategist.\n\nBuild a complete personal brand strategy\nfor [niche + goals].',
+   result:'PERSONAL BRAND DEFINED.',items:['Positioning statement done','Brand voice set','Visual identity direction']},
+  {id:72, cat:'Personal Brand',accent:'#A855F7',
+   hook:"This writes your About Me page that converts.",
+   prob:"Most About pages are boring life summaries nobody reads.",
+   probBody:"The best About pages are written for the reader, not the writer. They answer: can you help me? This prompt writes yours that way.",
+   prompt:"Act as a brand copywriter.\n\nWrite an About Me page\nfor [niche] creator.",
+   result:"ABOUT PAGE THAT CONVERTS.",items:['Reader-first structure','Credibility built naturally','CTA at the end']},
+  {id:73, cat:'Personal Brand',accent:'#A855F7',
+   hook:'This creates your signature framework.',
+   prob:'Generic advice gets ignored. A signature framework gets remembered and shared.',
+   probBody:"The creators with the strongest brands all have a unique framework. This prompt helps you build and name yours.",
+   prompt:'Act as a brand architect.\n\nCreate a signature framework\nfor [expertise area].',
+   result:'YOUR FRAMEWORK CREATED.',items:['Framework structure built','Name + acronym generated','Teachable + shareable']},
+  {id:74, cat:'Personal Brand',accent:'#A855F7',
+   hook:'This writes your origin story post.',
+   prob:'Facts tell. Stories sell. Most creators never share their story.',
+   probBody:'Your origin story is the most powerful marketing tool you have. This prompt structures it into a post people save and share.',
+   prompt:'Act as a brand storyteller.\n\nWrite my origin story post\nbased on: [your story in brief].',
+   result:'ORIGIN STORY WRITTEN.',items:['Emotional + strategic arc','Struggle to solution format','Builds immediate trust']},
+  {id:75, cat:'Personal Brand',accent:'#A855F7',
+   hook:'This creates your content brand pillars.',
+   prob:'Without content pillars, you post randomly and attract nobody in particular.',
+   probBody:'Brand pillars give every piece of content a purpose. They build a recognizable identity over time. This prompt defines yours.',
+   prompt:'Act as a brand strategist.\n\nDefine 5 content pillars\nfor [niche] personal brand.',
+   result:'5 BRAND PILLARS DEFINED.',items:['5 pillars set','Audience alignment mapped','Every post has a home']},
+  {id:76, cat:'Personal Brand',accent:'#A855F7',
+   hook:'This builds your expert positioning statement.',
+   prob:"If you cannot say what makes you different in one sentence, neither can your audience.",
+   probBody:'Expert positioning is the difference between being seen as a commodity and being the only option. This builds yours.',
+   prompt:'Act as a positioning expert.\n\nWrite my expert positioning statement\nfor [niche + unique angle].',
+   result:'POSITIONING STATEMENT DONE.',items:['One-liner created','Unique angle locked in','Memorable and shareable']},
+  {id:77, cat:'Personal Brand',accent:'#A855F7',
+   hook:'This creates a thought leadership post series.',
+   prob:'Most creators share tactics. Thought leaders share frameworks and opinions.',
+   probBody:'Thought leadership turns followers into believers. This prompt designs a 5-post series that establishes your authority.',
+   prompt:'Act as a thought leadership strategist.\n\nDesign a 5-post thought leadership\nseries for [niche].',
+   result:'THOUGHT LEADER SERIES BUILT.',items:['5 posts mapped','Opinion + framework mix','Authority established']},
+  {id:78, cat:'Personal Brand',accent:'#A855F7',
+   hook:"This writes Lessons I Learned posts that go viral.",
+   prob:'Experience posts perform better than advice posts. Most creators give advice instead of lessons.',
+   probBody:"Lessons I learned posts get massive saves because they feel like insider knowledge. This writes yours.",
+   prompt:"Act as a content strategist.\n\nWrite a Lessons I Learned viral post\nabout [topic or experience].",
+   result:"LESSONS POST WRITTEN.",items:['Viral list format','Personal + relatable','Save-optimized structure']},
+  {id:79, cat:'Personal Brand',accent:'#A855F7',
+   hook:'This builds a speaker bio that books gigs.',
+   prob:'Most speaker bios are resume summaries. Bookers want to know your value, not your history.',
+   probBody:'A great speaker bio answers: why this person, why this topic, why now. This prompt writes the version that gets you booked.',
+   prompt:'Act as a PR copywriter.\n\nWrite a speaker bio for [name]\nfor [niche or industry events].',
+   result:'SPEAKER BIO READY.',items:['Authority voice set','Credibility + value hook','Short + long versions']},
+  {id:80, cat:'Personal Brand',accent:'#A855F7',
+   hook:'This creates a press kit that gets media coverage.',
+   prob:'Most creators have no media presence because they never make it easy for journalists.',
+   probBody:'A press kit is your shortcut to media coverage. This prompt writes every section — bio, talking points, and pitch angle.',
+   prompt:'Act as a PR strategist.\n\nCreate a press kit for [creator or brand]\nfor media outreach.',
+   result:'PRESS KIT COMPLETE.',items:['Bio + talking points','Pitch angle included','Media-ready format']},
+
+  /* ── AI PROMPTING TIPS 81-90 ── */
+  {id:81, cat:'AI Prompting',accent:'#00D4FF',
+   hook:'This is the master prompt formula that works every time.',
+   prob:'Most prompts fail because they skip the role, context, or output format.',
+   probBody:"A great prompt has 4 elements: role, context, task, and format. This teaches you the formula with a template to use every time.",
+   prompt:'Act as a prompt engineer.\n\nTeach me the master prompt formula\nwith 5 examples for [use case].',
+   result:'MASTER FORMULA LEARNED.',items:['4-part prompt structure','5 examples included','Works for any use case']},
+  {id:82, cat:'AI Prompting',accent:'#00D4FF',
+   hook:'This turns ChatGPT into your writing team.',
+   prob:"Most people use ChatGPT as a search engine. It is actually a full writing department.",
+   probBody:'With the right prompts, ChatGPT can replace a copywriter, editor, strategist, and researcher. This prompt sets it all up.',
+   prompt:'Act as a writing team lead.\n\nSet up an AI writing workflow\nfor [type of content].',
+   result:'AI WRITING TEAM READY.',items:['Full workflow mapped','Roles + prompts set','Content system built']},
+  {id:83, cat:'AI Prompting',accent:'#00D4FF',
+   hook:'This prompt makes ChatGPT sound exactly like you.',
+   prob:"AI content sounds like AI. That kills trust, engagement, and sales.",
+   probBody:'The secret is training ChatGPT on your voice before generating content. This prompt extracts your tone and replicates it.',
+   prompt:'Act as a voice analyst.\n\nAnalyze this writing sample: [sample]\nThen replicate the tone and voice.',
+   result:'AI SOUNDS LIKE YOU.',items:['Voice extracted','Tone profile created','All content feels authentic']},
+  {id:84, cat:'AI Prompting',accent:'#00D4FF',
+   hook:'This designs a custom GPT for your business.',
+   prob:'A generic AI gives generic results. A custom GPT trained on your business changes everything.',
+   probBody:'Custom GPTs can handle your FAQs, generate on-brand content, and automate repetitive tasks. This prompt designs yours.',
+   prompt:'Act as a GPT architect.\n\nDesign a custom GPT for [business type]\nwith specific instructions and use cases.',
+   result:'CUSTOM GPT DESIGNED.',items:['System prompt built','Use cases defined','Ready to deploy']},
+  {id:85, cat:'AI Prompting',accent:'#00D4FF',
+   hook:'This uses AI to analyze your competition.',
+   prob:"Most creators guess what is working in their niche. AI can tell you exactly.",
+   probBody:'Competitor analysis used to take days. This prompt structure runs the analysis in minutes and surfaces the gaps you can win.',
+   prompt:'Act as a competitive analyst.\n\nAnalyze the top [niche] creators\nand find content gaps I can fill.',
+   result:'COMPETITOR GAPS FOUND.',items:['Top competitors mapped','Content gaps identified','Positioning opportunity clear']},
+  {id:86, cat:'AI Prompting',accent:'#00D4FF',
+   hook:'This builds a full AI content workflow.',
+   prob:'Most creators use AI for one task at a time. That misses the real leverage.',
+   probBody:'The real power of AI is chaining prompts together into a workflow. This designs the full system from idea to published post.',
+   prompt:'Act as an AI workflow designer.\n\nBuild a full content workflow using AI\nfrom idea to published post.',
+   result:'AI CONTENT WORKFLOW DONE.',items:['Idea to post in 15 min','Every step automated','Repeatable every week']},
+  {id:87, cat:'AI Prompting',accent:'#00D4FF',
+   hook:'This prompt writes better than most copywriters.',
+   prob:"Generic AI copy does not convert. Strategic AI copy does — with the right setup.",
+   probBody:'This prompt uses a professional direct-response copywriting framework inside ChatGPT. The output reads like a pro wrote it.',
+   prompt:'Act as a direct-response copywriter.\n\nWrite [copy type] for [product]\nusing the AIDA framework.',
+   result:'PROFESSIONAL COPY WRITTEN.',items:['AIDA structure applied','Conversion-focused tone','Ready to publish']},
+  {id:88, cat:'AI Prompting',accent:'#00D4FF',
+   hook:'This turns meeting notes into action plans.',
+   prob:'Most meeting notes sit in a doc forever and nothing gets done.',
+   probBody:'This prompt takes raw meeting notes and outputs a structured action plan with owners, deadlines, and priorities in 30 seconds.',
+   prompt:'Act as a project manager.\n\nTurn these meeting notes: [notes]\ninto a structured action plan.',
+   result:'ACTION PLAN IN 30 SECONDS.',items:['Tasks extracted','Owners + deadlines added','Priority order set']},
+  {id:89, cat:'AI Prompting',accent:'#00D4FF',
+   hook:'This uses AI to price your offers correctly.',
+   prob:'Most creators underprice because they guess. Pricing should be based on value delivered.',
+   probBody:'Underpricing kills your business and your confidence. This prompt helps you calculate value-based pricing for any offer.',
+   prompt:'Act as a pricing strategist.\n\nHelp me price [offer] based on\nvalue delivered to [audience].',
+   result:'OFFER PRICED WITH CONFIDENCE.',items:['Value calculation done','Price range defined','Anchoring strategy included']},
+  {id:90, cat:'AI Prompting',accent:'#00D4FF',
+   hook:'This builds an AI system that runs your business.',
+   prob:"You are doing manually what a system could do automatically.",
+   probBody:'Every repetitive decision in your business can be systematized with AI. This prompt designs the operational AI layer for your business.',
+   prompt:'Act as a business systems architect.\n\nBuild an AI-powered operations system\nfor [business type].',
+   result:'AI BUSINESS SYSTEM BUILT.',items:['Core systems identified','AI tools mapped','Automate 5 hours per week']},
+
+  /* ── LAUNCH & SALES 91-100 ── */
+  {id:91, cat:'Launch & Sales',accent:'#22C55E',
+   hook:'This writes a product launch plan in minutes.',
+   prob:'Most product launches are improvised. Improvised launches make improvised money.',
+   probBody:'A launch plan maps every action, every email, every post, every deadline. This prompt builds the entire plan in one session.',
+   prompt:'Act as a launch strategist.\n\nBuild a complete product launch plan\nfor [product].',
+   result:'LAUNCH PLAN COMPLETE.',items:['Pre-launch mapped','Launch week planned','Post-launch follow-up set']},
+  {id:92, cat:'Launch & Sales',accent:'#22C55E',
+   hook:'This writes objection-busting sales scripts.',
+   prob:"Most creators avoid objections. The best salespeople welcome them.",
+   probBody:"Every objection is a question in disguise. This prompt maps the 5 most common objections and writes the exact response to each.",
+   prompt:'Act as a sales trainer.\n\nWrite scripts for the 5 biggest objections\nto [offer].',
+   result:'ALL OBJECTIONS HANDLED.',items:['5 objection scripts','Empathetic + direct tone','Works in DMs and calls']},
+  {id:93, cat:'Launch & Sales',accent:'#22C55E',
+   hook:'This creates a Black Friday campaign that sells.',
+   prob:'Most Black Friday promos are just discount announcements. They barely convert.',
+   probBody:'A Black Friday campaign needs a story, urgency, a real reason to buy now, and a sequence. This builds all of it.',
+   prompt:'Act as a campaign strategist.\n\nBuild a Black Friday email + social campaign\nfor [product].',
+   result:'BLACK FRIDAY CAMPAIGN DONE.',items:['Campaign story built','Urgency + scarcity logic','Email + social posts written']},
+  {id:94, cat:'Launch & Sales',accent:'#22C55E',
+   hook:'This builds a waitlist that sells before launch.',
+   prob:'Launching to a cold audience is the hardest way to sell.',
+   probBody:'A warm waitlist means you launch to people who are already excited and ready to buy. This prompt builds the waitlist strategy.',
+   prompt:'Act as a pre-launch strategist.\n\nBuild a waitlist campaign for [product]\nbefore it launches.',
+   result:'WAITLIST SYSTEM BUILT.',items:['Waitlist page copy written','Nurture sequence designed','Launch day strategy set']},
+  {id:95, cat:'Launch & Sales',accent:'#22C55E',
+   hook:'This creates an upsell offer that doubles revenue.',
+   prob:'Most creators leave money on the table after every sale.',
+   probBody:'The easiest sale is to someone who just bought. An upsell offer capitalizes on buying momentum. This designs yours.',
+   prompt:'Act as an upsell strategist.\n\nDesign an upsell offer for [main product]\nthat complements the purchase.',
+   result:'UPSELL OFFER DESIGNED.',items:['Upsell concept built','Complementary value clear','Revenue per customer up']},
+  {id:96, cat:'Launch & Sales',accent:'#22C55E',
+   hook:'This writes a DM sales script that converts.',
+   prob:"Most DM sales conversations are either too pushy or too passive. Both kill the sale.",
+   probBody:'A great DM sales script feels like a natural conversation, not a pitch. This writes the exact flow from intro to close.',
+   prompt:'Act as a DM sales coach.\n\nWrite a DM sales conversation flow\nfor [offer].',
+   result:'DM SCRIPT WRITTEN.',items:['Full conversation flow','Objection handles included','Soft close at the end']},
+  {id:97, cat:'Launch & Sales',accent:'#22C55E',
+   hook:'This builds a referral program that grows itself.',
+   prob:'Most creators only have one traffic source. That is a single point of failure.',
+   probBody:'A referral program turns every customer into a salesperson. This prompt designs the incentive structure and the messaging.',
+   prompt:'Act as a growth strategist.\n\nDesign a referral program for [business]\nwith incentive structure.',
+   result:'REFERRAL PROGRAM BUILT.',items:['Incentive structure designed','Referral messaging written','Viral loop created']},
+  {id:98, cat:'Launch & Sales',accent:'#22C55E',
+   hook:'This creates a countdown campaign that drives urgency.',
+   prob:'Without urgency, people say they will buy later. Later usually means never.',
+   probBody:'Urgency is the engine of every successful promotion. This prompt builds the 72-hour countdown campaign across email and social.',
+   prompt:'Act as an urgency copywriter.\n\nBuild a 72-hour countdown campaign\nfor [offer].',
+   result:'COUNTDOWN CAMPAIGN DONE.',items:['3-day email sequence','Social posts for each day','Urgency without desperation']},
+  {id:99, cat:'Launch & Sales',accent:'#22C55E',
+   hook:'This writes a case study that sells for you.',
+   prob:"Testimonials say you are good. Case studies prove it.",
+   probBody:'A well-structured case study is the most powerful sales asset you can have. This prompt writes it in the format buyers find most convincing.',
+   prompt:'Act as a case study writer.\n\nWrite a case study for [client result]\nin before and after format.',
+   result:'CASE STUDY WRITTEN.',items:['Before and after structure','Specific results featured','Buying trust built']},
+  {id:100, cat:'Launch & Sales',accent:'#22C55E',
+   hook:'This is the complete PromptAider system.',
+   prob:'You now have every tool to build, grow, and monetize with AI prompts.',
+   probBody:"100 reels. 100 prompts. One system to create content, grow an audience, and turn it into income. This is what PromptAider was built for.",
+   prompt:'Act as my AI business strategist.\n\nUsing everything about content,\nmonetization, and AI — build my\ncomplete creator business roadmap.',
+   result:'YOUR AI BUSINESS BUILT.',items:['Complete roadmap done','Income streams mapped','Start with Reel 1 — now']},
+
 ];
 
-const CAT_COLORS={'Creator Content':'#F5A623','Monetization':'#A855F7','AI Workflow':'#00D4FF','Professional':'#22C55E'};
+const CAT_COLORS={'Creator Content':'#F5A623','Monetization':'#A855F7','AI Workflow':'#00D4FF','Professional':'#22C55E','Email Marketing':'#FF4757','Social Growth':'#F5A623','Personal Brand':'#A855F7','AI Prompting':'#00D4FF','Launch & Sales':'#22C55E'};
 const SCENE_TIMINGS=['0–2 sec','2–4 sec','4–9 sec','9–12 sec','12–15 sec'];
 const SCENE_NAMES=['① Hook','② Problem','③ Prompt','④ Result','⑤ CTA'];
 const SCENE_DUR=[2000,2000,5000,3000,3000];
@@ -914,7 +1230,7 @@ function updateClock(){const n=new Date();document.getElementById('clockEl').tex
 /* ══ GRID ══ */
 function buildGrid(){
   const g=document.getElementById('reelGrid');
-  for(let i=1;i<=50;i++){
+  for(let i=1;i<=100;i++){
     const b=document.createElement('button');
     b.className='rb'+(i===1?' active':''); b.id='rb'+i;
     b.textContent=String(i).padStart(2,'0');
@@ -980,15 +1296,15 @@ function markDone(){
   document.getElementById('rb'+curReel).classList.add('done');
   updateProg(); buildLib(); nextReel();
 }
-function nextReel(){loadReel(curReel<50?curReel+1:1);}
+function nextReel(){loadReel(curReel<100?curReel+1:1);}
 function updateProg(){
-  const n=doneReels.size,pct=Math.round(n/50*100);
+  const n=doneReels.size,pct=Math.round(n/100*100);
   document.getElementById('doneN').textContent=n;
-  document.getElementById('leftN').textContent=50-n;
-  document.getElementById('progFill').style.width=Math.max(n/50*100,.5)+'%';
+  document.getElementById('leftN').textContent=100-n;
+  document.getElementById('progFill').style.width=Math.max(n/100*100,.5)+'%';
   document.getElementById('pctLbl').textContent=pct+'%';
   document.getElementById('libDone').textContent=n;
-  document.getElementById('libLeft').textContent=50-n;
+  document.getElementById('libLeft').textContent=100-n;
   document.getElementById('libPct').textContent=pct+'%';
 }
 
