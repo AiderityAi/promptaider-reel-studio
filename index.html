@@ -400,8 +400,8 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
 <div class="topbar">
   <div class="wordmark"><span class="a">Prompt</span><span class="b">Aider</span><em>REEL FACTORY</em></div>
   <div class="topbar-pills">
-    <div class="pill pill-a">100 Reels</div>
-    <div class="pill pill-c">9 Categories</div>
+    <div class="pill pill-a">130 Reels</div>
+    <div class="pill pill-c">11 Categories</div>
     <div class="pill pill-g">MP4 Export</div>
     <div class="pill" style="background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.3);color:#FF4757;">Reel Factory</div>
   </div>
@@ -413,10 +413,10 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
 <div class="lib">
   <div class="lib-head">
     <div class="sec-label">Viral Idea Library</div>
-    <input class="search" id="searchBox" placeholder="Search 50 ideas..." oninput="filterLib()">
+    <input class="search" id="searchBox" placeholder="Search 130 reels..." oninput="filterLib()">
   </div>
   <div class="cat-strip" id="catStrip">
-    <button class="ctab on" onclick="setCat('All',this)">All 100</button>
+    <button class="ctab on" onclick="setCat('All',this)">All 130</button>
     <button class="ctab" onclick="setCat('Creator Content',this)">Creator (1–15)</button>
     <button class="ctab" onclick="setCat('Monetization',this)">Monetize (16–30)</button>
     <button class="ctab" onclick="setCat('AI Workflow',this)">Workflow (31–40)</button>
@@ -426,11 +426,16 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
     <button class="ctab" onclick="setCat('Personal Brand',this)">Brand (71–80)</button>
     <button class="ctab" onclick="setCat('AI Prompting',this)">AI Tips (81–90)</button>
     <button class="ctab" onclick="setCat('Launch &amp; Sales',this)">Launch (91–100)</button>
+    <button class="ctab" onclick="setCat('Creator Growth',this)">Growth (101–106)</button>
+    <button class="ctab" onclick="setCat('Monetization',this)">Monetize+ (107–112)</button>
+    <button class="ctab" onclick="setCat('AI Workflow',this)">Workflow+ (113–118)</button>
+    <button class="ctab" onclick="setCat('Professional',this)">Pro+ (119–124)</button>
+    <button class="ctab" onclick="setCat('Viral Authority',this)">Viral (125–130)</button>
   </div>
   <div class="idea-scroll" id="ideaScroll"></div>
   <div class="lib-foot">
     <div class="lfs"><div class="lfs-n" style="color:var(--amber)" id="libDone">0</div><div class="lfs-l">Done</div></div>
-    <div class="lfs"><div class="lfs-n" style="color:var(--cyan)" id="libLeft">100</div><div class="lfs-l">Left</div></div>
+    <div class="lfs"><div class="lfs-n" style="color:var(--cyan)" id="libLeft">130</div><div class="lfs-l">Left</div></div>
     <div class="lfs"><div class="lfs-n" style="color:var(--green)" id="libPct">0%</div><div class="lfs-l">Complete</div></div>
   </div>
 </div>
@@ -450,8 +455,8 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
     <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
     <div class="prog-nums">
       <div class="pn"><div class="pn-v" style="color:var(--amber)" id="doneN">0</div><div class="pn-l">Done</div></div>
-      <div class="pn"><div class="pn-v" style="color:var(--cyan)" id="leftN">100</div><div class="pn-l">Left</div></div>
-      <div class="pn"><div class="pn-v" style="color:rgba(255,255,255,.25)">100</div><div class="pn-l">Total</div></div>
+      <div class="pn"><div class="pn-v" style="color:var(--cyan)" id="leftN">130</div><div class="pn-l">Left</div></div>
+      <div class="pn"><div class="pn-v" style="color:rgba(255,255,255,.25)">130</div><div class="pn-l">Total</div></div>
     </div>
   </div>
 
@@ -720,11 +725,11 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
     <div class="bb-sub">Export MP4 reels · H264 · 1080×1920 · 30fps · Instagram-ready</div>
     <div class="bb-row">
       <div class="bb-label">From reel</div>
-      <input class="bb-input" id="batchFrom" type="number" min="1" max="100" value="1">
+      <input class="bb-input" id="batchFrom" type="number" min="1" max="130" value="1">
     </div>
     <div class="bb-row">
       <div class="bb-label">To reel</div>
-      <input class="bb-input" id="batchTo" type="number" min="1" max="100" value="5">
+      <input class="bb-input" id="batchTo" type="number" min="1" max="130" value="5">
     </div>
     <div class="bb-row">
       <div class="bb-label">Format</div>
@@ -739,7 +744,7 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
         <button onclick="setBatch(1,10)" class="btn btn-ghost" style="flex:1;padding:6px 4px;font-size:8px;">1–10</button>
         <button onclick="setBatch(1,30)" class="btn btn-a" style="flex:1;padding:6px 4px;font-size:8px;">30 Reels ⚡</button>
         <button onclick="setBatch(1,50)" class="btn btn-ghost" style="flex:1;padding:6px 4px;font-size:8px;">1–50</button>
-        <button onclick="setBatch(1,100)" class="btn btn-ghost" style="flex:1;padding:6px 4px;font-size:8px;">All 100</button>
+        <button onclick="setBatch(1,130)" class="btn btn-ghost" style="flex:1;padding:6px 4px;font-size:8px;">All 130</button>
       </div>
     </div>
     <div class="bb-queue" id="batchQueuePreview">
@@ -1375,10 +1380,198 @@ const IDEAS=[
    probBody:"100 reels. 100 prompts. One system to create content, grow an audience, and turn it into income. This is what PromptAider was built for.",
    prompt:'Act as my AI business strategist.\n\nUsing everything about content,\nmonetization, and AI — build my\ncomplete creator business roadmap.',
    result:'YOUR AI BUSINESS BUILT.',items:['Complete roadmap done','Income streams mapped','Start with Reel 1 — now']},
+  /* ── WEEK 1: Creator Growth (101–106) ── */
+  {id:101, cat:'Creator Growth',accent:'#F5A623',
+   hook:'Stop asking ChatGPT random questions.',
+   prob:'Random questions give random results. Most creators waste hours prompting with zero structure.',
+   probBody:'Unstructured prompts waste your time and produce generic output. One right prompt replaces 30 bad ones.',
+   prompt:'Act as a content strategist.\n\nGenerate 20 viral Instagram hooks\nfor [your niche].',
+   result:'20 VIRAL HOOKS IN 60 SEC.',items:['20 scroll-stopping hooks','Niche-specific angles','Ready to film today']},
+  {id:102, cat:'Creator Growth',accent:'#F5A623',
+   hook:'This prompt writes your captions instantly.',
+   prob:'Most creators spend 45 minutes per caption. That is a system problem, not a writing problem.',
+   probBody:'Manual caption writing burns your best creative energy on the lowest-leverage task. This prompt fixes that.',
+   prompt:'Act as a social media copywriter.\n\nWrite 5 Instagram captions\nwith hooks and CTAs for [niche].',
+   result:'5 CAPTIONS. DONE IN 60 SEC.',items:['5 ready-to-post captions','Hook + CTA per caption','Copy-paste ready']},
+  {id:103, cat:'Creator Growth',accent:'#F5A623',
+   hook:'Creators: steal this prompt.',
+   prob:'Most creators reinvent the wheel every post. The best ones use systems.',
+   probBody:'A single reusable prompt can replace your entire brainstorming session. This is the one creators save and reuse.',
+   prompt:'Act as a viral content creator.\n\nWrite 10 high-performing posts\nfor a [niche] Instagram account.',
+   result:'10 POSTS. STEAL THEM.',items:['10 fully written posts','Hooks + body + CTA','Works in any niche']},
+  {id:104, cat:'Creator Growth',accent:'#F5A623',
+   hook:'This prompt gives you 30 content ideas.',
+   prob:'Content block is the number one reason creators stop posting consistently.',
+   probBody:'You cannot post consistently when you are always guessing what to post. This ends content block permanently.',
+   prompt:'Act as a content strategist.\n\nGenerate 30 content ideas\nfor a [niche] creator.',
+   result:'30 IDEAS READY TO USE.',items:['30 unique ideas','Organized by format','Zero blank page ever']},
+  {id:105, cat:'Creator Growth',accent:'#F5A623',
+   hook:'Never run out of post ideas again.',
+   prob:'Inconsistent posting is the number one growth killer on Instagram.',
+   probBody:'The algorithm rewards consistency. This prompt gives you a month of ideas in under 2 minutes so you never miss a day.',
+   prompt:'Act as a social media planner.\n\nCreate a 30-day content calendar\nfor a [niche] creator.',
+   result:'30-DAY CALENDAR READY.',items:['Every day mapped','Format per day set','Batch and post ahead']},
+  {id:106, cat:'Creator Growth',accent:'#F5A623',
+   hook:'Use this prompt before every post.',
+   prob:'Most posts fail before they are written because there is no hook strategy.',
+   probBody:'A strong hook in the first 2 seconds determines if anyone watches. This prompt writes your hook before you film anything.',
+   prompt:'Act as a hook specialist.\n\nWrite 10 scroll-stopping hooks\nfor a post about [topic].',
+   result:'10 HOOKS READY TO FILM.',items:['10 tested hook formats','2-second stop-scroll','Pick the best, film it']},
 
+  /* ── WEEK 2: Monetization (107–112) ── */
+  {id:107, cat:'Monetization',accent:'#A855F7',
+   hook:'This prompt generates digital product ideas.',
+   prob:'Most creators have expertise but no idea what to sell. This removes the guessing.',
+   probBody:'The gap between knowing something and selling it is a packaging problem. This prompt closes that gap in one session.',
+   prompt:'Act as a digital product strategist.\n\nGenerate 10 digital product ideas\nfor a [niche] creator.',
+   result:'10 PRODUCT IDEAS READY.',items:['10 validated concepts','Format + pricing per idea','Start building today']},
+  {id:108, cat:'Monetization',accent:'#A855F7',
+   hook:'Use this prompt to build your offer.',
+   prob:'Most creators have ideas but cannot structure them into something people pay for.',
+   probBody:'A great offer is specific, solves a real pain, and has a clear outcome. This prompt designs it all in one go.',
+   prompt:'Act as an offer strategist.\n\nBuild a compelling offer\nfor [your product or service].',
+   result:'OFFER BUILT AND PRICED.',items:['Offer structure done','Outcome statement clear','Price point set']},
+  {id:109, cat:'Monetization',accent:'#A855F7',
+   hook:'This prompt builds a sales funnel.',
+   prob:'Followers do not automatically become buyers. A funnel is what converts them.',
+   probBody:'Most creators post and hope. A funnel turns every reel into a system that runs on autopilot. This designs yours.',
+   prompt:'Act as a funnel strategist.\n\nBuild a complete lead magnet funnel\nfor [offer].',
+   result:'FULL FUNNEL MAPPED.',items:['Lead magnet designed','Email sequence outlined','Tripwire offer included']},
+  {id:110, cat:'Monetization',accent:'#A855F7',
+   hook:'This prompt tells you what to sell.',
+   prob:'Most creators guess what their audience wants to buy. Guessing is expensive.',
+   probBody:'Selling the wrong thing wastes months. This prompt identifies the exact product your audience is already primed to pay for.',
+   prompt:'Act as a market researcher.\n\nIdentify the top 5 things\n[audience] will pay to solve.',
+   result:'5 SELLABLE IDEAS FOUND.',items:['Top 5 buying motivators','Audience pain mapped','Ready to build product 1']},
+  {id:111, cat:'Monetization',accent:'#A855F7',
+   hook:'Find your ideal customers with this prompt.',
+   prob:'Selling to everyone means selling to no one. Niche clarity drives conversion.',
+   probBody:'The more specific your audience definition, the higher your conversion rate. This prompt builds your ideal customer profile.',
+   prompt:'Act as a customer research analyst.\n\nBuild an ideal customer profile\nfor a [niche] creator.',
+   result:'IDEAL CUSTOMER DEFINED.',items:['Demographics mapped','Pain points listed','Buying triggers identified']},
+  {id:112, cat:'Monetization',accent:'#A855F7',
+   hook:'This prompt creates a marketing strategy.',
+   prob:'Random marketing tactics without a strategy is expensive experimentation.',
+   probBody:'Strategy is what connects your audience, message, and channels into something that actually grows revenue. This builds it.',
+   prompt:'Act as a marketing strategist.\n\nBuild a 90-day marketing plan\nfor [business or creator].',
+   result:'90-DAY STRATEGY DONE.',items:['Channels prioritized','Content mix set','Revenue goals mapped']},
+
+  /* ── WEEK 3: AI Workflow (113–118) ── */
+  {id:113, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'Turn ChatGPT into your assistant.',
+   prob:'Most people use ChatGPT like a search engine. It is actually a full-time assistant.',
+   probBody:'With one setup prompt, you can turn ChatGPT into a specialist who knows your business, voice, and goals.',
+   prompt:'Act as my dedicated business assistant.\n\nYou know my business: [describe it].\nHelp me with [task].',
+   result:'YOUR AI ASSISTANT READY.',items:['Custom AI role set','Business context loaded','Tasks done in seconds']},
+  {id:114, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'Turn 1 post into 20 pieces of content.',
+   prob:'Creating fresh content for every platform every day is impossible to sustain.',
+   probBody:'One piece of content can feed 20 posts across 5 platforms. This prompt builds the repurposing system for you.',
+   prompt:'Act as a content repurposing expert.\n\nTurn this post: [post]\ninto 20 pieces for different platforms.',
+   result:'1 POST BECOMES 20.',items:['20 platform-native posts','Zero extra brainstorming','Weekly repurpose system']},
+  {id:115, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'Use this prompt to automate work.',
+   prob:'Every task you repeat manually is costing you hours you could spend creating.',
+   probBody:'Automation frees your highest-value time for strategy and content. This prompt maps your first automation workflow.',
+   prompt:'Act as an automation strategist.\n\nMap an automation workflow\nfor [business task].',
+   result:'WORKFLOW AUTOMATED.',items:['Step-by-step workflow','Tools identified','Time saved per week']},
+  {id:116, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'This prompt finds business opportunities.',
+   prob:'Most creators stay in one lane because they cannot see adjacent opportunities.',
+   probBody:'There are revenue streams hiding in your existing content and audience right now. This prompt surfaces them.',
+   prompt:'Act as a business opportunity analyst.\n\nFind 5 untapped opportunities\nfor a [niche] creator.',
+   result:'5 OPPORTUNITIES FOUND.',items:['5 revenue gaps spotted','Low competition angles','Start this week']},
+  {id:117, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'3 prompts running my business.',
+   prob:'Most creators feel overwhelmed because they are running a business with no system.',
+   probBody:'Three prompts can replace a content team, a strategist, and a copywriter. This shows you exactly which ones.',
+   prompt:'Act as a business systems architect.\n\nBuild 3 core AI prompts\nthat run a [type] creator business.',
+   result:'3 PROMPTS. ONE SYSTEM.',items:['Content prompt built','Strategy prompt set','Monetization prompt ready']},
+  {id:118, cat:'AI Workflow',accent:'#00D4FF',
+   hook:'This prompt writes your SOPs.',
+   prob:'You cannot scale or delegate without documented processes.',
+   probBody:'Every repeatable task in your business is a delegation opportunity. But you need an SOP first. This writes it in one shot.',
+   prompt:'Act as an operations writer.\n\nCreate a step-by-step SOP\nfor [business process].',
+   result:'SOP WRITTEN. DELEGATE.',items:['Full SOP structured','Delegate-ready format','Repeatable process built']},
+
+  /* ── WEEK 4: Professional (119–124) ── */
+  {id:119, cat:'Professional',accent:'#22C55E',
+   hook:'This prompt writes perfect emails.',
+   prob:'Poorly written emails lose deals, damage relationships, and waste time.',
+   probBody:'Most business emails are too long, unclear, and easy to ignore. This writes ones that get replied to.',
+   prompt:'Act as a professional email writer.\n\nWrite an email for [situation]\nthat gets opened and replied to.',
+   result:'EMAIL WRITTEN. SEND IT.',items:['Professional tone set','Clear and direct','Opens + replies go up']},
+  {id:120, cat:'Professional',accent:'#22C55E',
+   hook:'This prompt writes LinkedIn posts.',
+   prob:'Most professionals have valuable expertise they never share publicly. That is a wasted asset.',
+   probBody:'LinkedIn organic reach is at an all-time high right now. This prompt writes posts in the format that gets noticed.',
+   prompt:'Act as a LinkedIn copywriter.\n\nWrite 5 authority-building posts\nfor a [professional niche].',
+   result:'5 LINKEDIN POSTS READY.',items:['5 posts written','Authority-building tone','Engagement-optimized']},
+  {id:121, cat:'Professional',accent:'#22C55E',
+   hook:'Use this prompt to get clients.',
+   prob:'Most freelancers and consultants get clients by accident. This makes it systematic.',
+   probBody:'Client acquisition is a skill. This prompt writes your outreach, your offer, and your follow-up in one session.',
+   prompt:'Act as a client acquisition strategist.\n\nWrite an outreach sequence\nfor [service + ideal client].',
+   result:'CLIENT OUTREACH READY.',items:['3-touch outreach written','Value-first approach','Objection handles built in']},
+  {id:122, cat:'Professional',accent:'#22C55E',
+   hook:'This prompt writes proposals.',
+   prob:'Most proposals are too long, too vague, and arrive too late to close.',
+   probBody:'Clients buy certainty. A great proposal gives them certainty about the result, the timeline, and the cost. This writes it.',
+   prompt:'Act as a proposal writer.\n\nCreate a project proposal\nfor [client + service].',
+   result:'PROPOSAL READY TO SEND.',items:['Full proposal structured','Pricing + timeline clear','Professional format']},
+  {id:123, cat:'Professional',accent:'#22C55E',
+   hook:'Upgrade your professional profile.',
+   prob:'Most professional bios and profiles are forgettable summaries that convert nobody.',
+   probBody:'Your profile is working or not working 24 hours a day. If it is weak, you are losing opportunities every single day.',
+   prompt:'Act as a personal brand copywriter.\n\nRewrite my professional bio\nfor [platform + goal].',
+   result:'PROFILE UPGRADED.',items:['Bio rewritten','Value proposition clear','CTA built in']},
+  {id:124, cat:'Professional',accent:'#22C55E',
+   hook:'Use this prompt before meetings.',
+   prob:'Most people go into meetings unprepared and come out with vague next steps.',
+   probBody:'Preparation is the highest-leverage meeting strategy. This prompt preps your agenda, talking points, and desired outcome.',
+   prompt:'Act as a meeting strategist.\n\nPrepare me for a meeting\nabout [topic + goal].',
+   result:'MEETING PREP DONE.',items:['Agenda written','Talking points ready','Desired outcome set']},
+
+  /* ── WEEK 5: Viral Authority (125–130) ── */
+  {id:125, cat:'Viral Authority',accent:'#FF4757',
+   hook:'Before using this prompt vs after.',
+   prob:'Most people use ChatGPT with zero structure and get mediocre results.',
+   probBody:'Before: random questions. After: role + context + task + format. This single shift changes everything.',
+   prompt:'Act as a prompt engineer.\n\nShow the before and after\nof a structured vs unstructured prompt.',
+   result:'RESULTS 10X BETTER.',items:['Before prompt shown','After prompt shown','The difference is clear']},
+  {id:126, cat:'Viral Authority',accent:'#FF4757',
+   hook:'Stop using ChatGPT like this.',
+   prob:'Treating ChatGPT like a search engine is the most common mistake creators make.',
+   probBody:'ChatGPT is not Google. It is a collaborator. The moment you switch how you prompt it, the output quality jumps dramatically.',
+   prompt:'Act as an AI coach.\n\nShow me the wrong way vs right way\nto prompt ChatGPT for [task].',
+   result:'PROMPTING GAME CHANGED.',items:['Wrong way shown','Right way revealed','Quality improves instantly']},
+  {id:127, cat:'Viral Authority',accent:'#FF4757',
+   hook:'This prompt generated 30 posts.',
+   prob:'Most creators think creating content takes hours every week. Not if you batch.',
+   probBody:'One two-hour batch session using this prompt structure generates 30 posts. This is how the most consistent creators do it.',
+   prompt:'Act as a content batch strategist.\n\nGenerate 30 posts for a [niche] creator\nusing 5 content pillars.',
+   result:'30 POSTS IN ONE SESSION.',items:['30 posts generated','5 pillar framework','Batch once, post for weeks']},
+  {id:128, cat:'Viral Authority',accent:'#FF4757',
+   hook:'Why this prompt works.',
+   prob:'Most creators copy prompts without understanding why they work. That makes it impossible to adapt them.',
+   probBody:'Understanding the structure behind a great prompt is more valuable than the prompt itself. This breaks it down.',
+   prompt:'Act as a prompt engineer.\n\nExplain why this prompt structure works:\n[role + context + task + format].',
+   result:'PROMPT LOGIC UNLOCKED.',items:['4-part structure explained','Why each element matters','Adapt any prompt yourself']},
+  {id:129, cat:'Viral Authority',accent:'#FF4757',
+   hook:'Try this prompt challenge.',
+   prob:'Most people talk about using AI. Fewer actually use it consistently.',
+   probBody:'The fastest way to build an AI habit is with a structured challenge. This prompt gives you one actionable task per day for 7 days.',
+   prompt:'Act as an AI challenge designer.\n\nCreate a 7-day prompt challenge\nfor [niche] creators.',
+   result:'7-DAY CHALLENGE READY.',items:['Day-by-day tasks set','Builds daily AI habit','Share your results']},
+  {id:130, cat:'Viral Authority',accent:'#FF4757',
+   hook:'I built a free AI prompt starter kit.',
+   prob:'Most creators want to use AI but do not know where to start.',
+   probBody:'The biggest barrier to using AI is not knowing the right prompts to begin with. This starter kit removes that barrier completely.',
+   prompt:'Act as an AI starter kit designer.\n\nBuild a 10-prompt starter kit\nfor [niche] creators.',
+   result:'FREE STARTER KIT READY.',items:['10 essential prompts','Beginner to advanced','Comment PROMPTS to get it']},
 ];
 
-const CAT_COLORS={'Creator Content':'#F5A623','Monetization':'#A855F7','AI Workflow':'#00D4FF','Professional':'#22C55E','Email Marketing':'#FF4757','Social Growth':'#F5A623','Personal Brand':'#A855F7','AI Prompting':'#00D4FF','Launch & Sales':'#22C55E'};
+const CAT_COLORS={'Creator Content':'#F5A623','Monetization':'#A855F7','AI Workflow':'#00D4FF','Professional':'#22C55E','Email Marketing':'#FF4757','Social Growth':'#F5A623','Personal Brand':'#A855F7','AI Prompting':'#00D4FF','Launch & Sales':'#22C55E','Creator Growth':'#F5A623','Viral Authority':'#FF4757'};
 const SCENE_TIMINGS=['0–2 sec','2–4 sec','4–9 sec','9–12 sec','12–15 sec'];
 const SCENE_NAMES=['① Hook','② Problem','③ Prompt','④ Result','⑤ CTA'];
 const SCENE_DUR=[2000,2000,5000,3000,3000];
@@ -1416,7 +1609,7 @@ function updateClock(){const n=new Date();document.getElementById('clockEl').tex
 /* ══ GRID ══ */
 function buildGrid(){
   const g=document.getElementById('reelGrid');
-  for(let i=1;i<=100;i++){
+  for(let i=1;i<=130;i++){
     const b=document.createElement('button');
     b.className='rb'+(i===1?' active':''); b.id='rb'+i;
     b.textContent=String(i).padStart(2,'0');
@@ -1482,15 +1675,15 @@ function markDone(){
   document.getElementById('rb'+curReel).classList.add('done');
   updateProg(); buildLib(); nextReel();
 }
-function nextReel(){loadReel(curReel<100?curReel+1:1);}
+function nextReel(){loadReel(curReel<130?curReel+1:1);}
 function updateProg(){
-  const n=doneReels.size,pct=Math.round(n/100*100);
+  const n=doneReels.size,pct=Math.round(n/130*100);
   document.getElementById('doneN').textContent=n;
-  document.getElementById('leftN').textContent=100-n;
+  document.getElementById('leftN').textContent=130-n;
   document.getElementById('progFill').style.width=Math.max(n/100*100,.5)+'%';
   document.getElementById('pctLbl').textContent=pct+'%';
   document.getElementById('libDone').textContent=n;
-  document.getElementById('libLeft').textContent=100-n;
+  document.getElementById('libLeft').textContent=130-n;
   document.getElementById('libPct').textContent=pct+'%';
 }
 
@@ -2371,7 +2564,7 @@ function setBatch(f,t){
 }
 function _updateBatchPreview(){
   const from=parseInt(document.getElementById('batchFrom')?.value)||1;
-  const to  =Math.min(parseInt(document.getElementById('batchTo')?.value)||5,100);
+  const to  =Math.min(parseInt(document.getElementById('batchTo')?.value)||5,130);
   const el  =document.getElementById('batchQueuePreview'); if(!el) return;
   if(to<from){el.textContent='⚠ End must be ≥ start';return;}
   const count=to-from+1;
@@ -2384,7 +2577,7 @@ function updateBatchQueuePreview(){ _updateBatchPreview(); }
 
 async function startBatchExport(){
   const from=parseInt(document.getElementById('batchFrom')?.value)||1;
-  const to  =Math.min(parseInt(document.getElementById('batchTo')?.value)||5,100);
+  const to  =Math.min(parseInt(document.getElementById('batchTo')?.value)||5,130);
   await _runBatch(from,to);
 }
 
@@ -2395,7 +2588,7 @@ function setFBatch(f,t){
 }
 function _updateFBatchPreview(){
   const from=parseInt(document.getElementById('fbatchFrom')?.value)||1;
-  const to  =Math.min(parseInt(document.getElementById('fbatchTo')?.value)||30,100);
+  const to  =Math.min(parseInt(document.getElementById('fbatchTo')?.value)||30,130);
   const el  =document.getElementById('fbatchQueuePreview'); if(!el) return;
   if(to<from){el.textContent='⚠ End must be ≥ start';return;}
   const count=to-from+1;
@@ -2407,7 +2600,7 @@ function _updateFBatchPreview(){
 
 async function startFactoryBatch(){
   const from=parseInt(document.getElementById('fbatchFrom')?.value)||1;
-  const to  =Math.min(parseInt(document.getElementById('fbatchTo')?.value)||30,100);
+  const to  =Math.min(parseInt(document.getElementById('fbatchTo')?.value)||30,130);
   closeFactoryPanel();
   await _runBatch(from,to);
 }
@@ -2819,11 +3012,11 @@ function ha(hex,a){
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
         <div>
           <div style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:2px;font-family:'DM Mono',monospace;margin-bottom:6px;">FROM REEL</div>
-          <input id="fbatchFrom" type="number" min="1" max="100" value="1" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:8px 10px;color:#e2e8f0;font-family:'DM Mono',monospace;font-size:13px;outline:none;">
+          <input id="fbatchFrom" type="number" min="1" max="130" value="1" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:8px 10px;color:#e2e8f0;font-family:'DM Mono',monospace;font-size:13px;outline:none;">
         </div>
         <div>
           <div style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:2px;font-family:'DM Mono',monospace;margin-bottom:6px;">TO REEL</div>
-          <input id="fbatchTo" type="number" min="1" max="100" value="30" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:8px 10px;color:#e2e8f0;font-family:'DM Mono',monospace;font-size:13px;outline:none;">
+          <input id="fbatchTo" type="number" min="1" max="130" value="30" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:8px 10px;color:#e2e8f0;font-family:'DM Mono',monospace;font-size:13px;outline:none;">
         </div>
       </div>
       <!-- Quick presets -->
@@ -2831,7 +3024,7 @@ function ha(hex,a){
         <button onclick="setFBatch(1,10)"  class="btn btn-ghost" style="flex:1;font-size:9px;">1–10</button>
         <button onclick="setFBatch(1,30)"  class="btn btn-a"    style="flex:1;font-size:9px;">30 Reels ⚡</button>
         <button onclick="setFBatch(1,50)"  class="btn btn-ghost" style="flex:1;font-size:9px;">1–50</button>
-        <button onclick="setFBatch(1,100)" class="btn btn-ghost" style="flex:1;font-size:9px;">All 100</button>
+        <button onclick="setFBatch(1,130)" class="btn btn-ghost" style="flex:1;font-size:9px;">All 130</button>
       </div>
       <!-- Format info -->
       <div style="padding:10px 14px;border-radius:7px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);margin-bottom:14px;">
