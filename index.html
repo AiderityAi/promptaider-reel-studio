@@ -280,11 +280,11 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
 .sc-ri.zoom{animation:zoomIn .35s ease both;}
 
 /* CTA */
-.sc-ctop{font-size:7px;letter-spacing:4px;font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:10px;position:relative;z-index:5;}
-.sc-cq{font-family:'Bebas Neue',sans-serif;line-height:.93;margin-bottom:12px;position:relative;z-index:5;color:#fff;}
-.sc-cbox{border-radius:7px;padding:11px;width:100%;position:relative;z-index:5;}
-.sc-ckw{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;display:block;}
-.sc-csub{font-size:9px;color:rgba(255,255,255,.35);line-height:1.6;margin-top:4px;font-weight:300;}
+.sc-ctop{font-size:7px;letter-spacing:4px;font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:6px;position:relative;z-index:5;text-align:center;width:100%;}
+.sc-cq{font-family:'Bebas Neue',sans-serif;line-height:.93;margin-bottom:10px;position:relative;z-index:5;color:#fff;text-align:center;width:100%;}
+.sc-cbox{border-radius:10px;padding:10px 12px;width:100%;position:relative;z-index:5;text-align:center;}
+.sc-ckw{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;display:block;text-align:center;word-break:break-word;}
+.sc-csub{font-size:8px;color:rgba(255,255,255,.45);line-height:1.55;margin-top:4px;font-weight:300;text-align:center;}
 /* CTA pulse animation */
 @keyframes ctaPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,166,35,.4)}50%{box-shadow:0 0 0 8px rgba(245,166,35,0)}}
 .sc-cbox.pulse{animation:ctaPulse 1.5s ease infinite;}
@@ -392,6 +392,62 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
 /* scrollbars */
 ::-webkit-scrollbar{width:2px;height:2px;}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);}
+
+/* ══ HOOK SCORE METER ══ */
+.hook-score-card{background:rgba(0,0,0,.35);border:1px solid rgba(245,166,35,.2);border-radius:7px;padding:10px 12px;margin-bottom:10px;}
+.hs-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.hs-score{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--amber);line-height:1;}
+.hs-label{font-size:7px;color:rgba(255,255,255,.2);letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;}
+.hs-bar-wrap{height:4px;background:rgba(255,255,255,.07);border-radius:2px;flex:1;margin-left:10px;overflow:hidden;}
+.hs-bar-fill{height:100%;border-radius:2px;transition:width .5s ease;}
+.hs-dim{display:flex;gap:6px;flex-wrap:wrap;}
+.hs-dim-item{padding:2px 8px;border-radius:12px;font-size:8px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.3);transition:all .3s;}
+.hs-dim-item.high{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:#22C55E;}
+.hs-dim-item.med{background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.25);color:var(--amber);}
+.hs-dim-item.low{background:rgba(255,71,87,.1);border-color:rgba(255,71,87,.25);color:var(--red);}
+.hs-tip{font-size:9px;color:rgba(0,212,255,.6);font-family:'DM Mono',monospace;margin-top:6px;line-height:1.6;display:none;}
+.hs-tip.show{display:block;}
+/* ══ RETENTION TIMELINE ══ */
+.retention-card{background:rgba(0,0,0,.3);border:1px solid rgba(168,85,247,.15);border-radius:7px;padding:10px 12px;margin-bottom:10px;}
+.ret-row{display:flex;gap:3px;height:18px;width:100%;margin:8px 0 4px;}
+.ret-seg{border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;font-family:'DM Mono',monospace;color:rgba(0,0,0,.7);letter-spacing:.5px;overflow:hidden;transition:opacity .2s;}
+.ret-seg:hover{opacity:.8;}
+.ret-labels{display:flex;justify-content:space-between;}
+.ret-lbl{font-size:7px;color:rgba(255,255,255,.2);font-family:'DM Mono',monospace;}
+/* ══ VIRAL REEL TEMPLATES ══ */
+.tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;}
+.tpl-btn{padding:7px 6px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;border:1px solid rgba(255,255,255,.08);background:var(--glass);color:rgba(255,255,255,.35);transition:all .2s;font-family:'DM Mono',monospace;text-align:center;line-height:1.4;}
+.tpl-btn:hover{border-color:rgba(0,212,255,.3);color:var(--cyan);background:rgba(0,212,255,.07);}
+.tpl-btn.active-tpl{background:rgba(0,212,255,.12);border-color:rgba(0,212,255,.4);color:var(--cyan);}
+.tpl-tag{font-size:7px;opacity:.6;display:block;margin-top:1px;}
+/* ══ VIRAL HOOK GENERATOR ══ */
+.hook-gen-panel{background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.15);border-radius:7px;padding:10px 12px;margin-bottom:10px;display:none;}
+.hook-gen-panel.show{display:block;}
+.hook-option{padding:7px 10px;margin-bottom:4px;border-radius:5px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.06);font-size:11px;color:rgba(255,255,255,.7);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:all .2s;}
+.hook-option:hover{border-color:rgba(245,166,35,.3);color:#fff;}
+.hook-use-btn{font-size:8px;font-family:'DM Mono',monospace;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:3px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);color:var(--amber);flex-shrink:0;}
+.hook-score-mini{font-size:8px;font-family:'DM Mono',monospace;font-weight:700;padding:1px 6px;border-radius:10px;flex-shrink:0;}
+.hs-good{background:rgba(34,197,94,.15);color:#22C55E;border:1px solid rgba(34,197,94,.3);}
+.hs-ok{background:rgba(245,166,35,.12);color:var(--amber);border:1px solid rgba(245,166,35,.25);}
+/* ══ GENERATE REEL BUTTON ══ */
+.gen-reel-btn{width:100%;padding:11px;border-radius:7px;margin-bottom:8px;background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(168,85,247,.15));border:1px solid rgba(0,212,255,.3);color:#e2e8f0;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.gen-reel-btn:hover{background:linear-gradient(135deg,rgba(0,212,255,.25),rgba(168,85,247,.25));}
+/* ══ REEL OUTPUT PANEL ══ */
+.reel-output-panel{background:rgba(0,0,0,.4);border:1px solid rgba(168,85,247,.2);border-radius:8px;padding:12px;margin-bottom:10px;display:none;}
+.reel-output-panel.show{display:block;animation:fadeInUp .3s ease;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.rop-section{margin-bottom:10px;}
+.rop-label{font-size:7px;color:rgba(255,255,255,.2);letter-spacing:3px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:4px;}
+.rop-val{font-size:11px;color:rgba(255,255,255,.75);line-height:1.55;}
+.rop-prompt{font-family:'DM Mono',monospace;font-size:10px;color:rgba(0,212,255,.8);background:rgba(0,0,0,.4);border:1px solid rgba(0,212,255,.15);border-radius:5px;padding:8px;white-space:pre-wrap;line-height:1.7;}
+.rop-caption{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.6);background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06);border-radius:5px;padding:8px;white-space:pre-wrap;line-height:1.7;}
+.rop-tags{font-family:'DM Mono',monospace;font-size:9px;color:rgba(168,85,247,.75);line-height:1.8;}
+.rop-copy-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
+.rop-copy-btn{flex:1;padding:5px;border-radius:4px;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);color:var(--cyan);}
+.rop-copy-btn:hover{background:rgba(0,212,255,.18);}
+.rop-copy-btn.amber{background:rgba(245,166,35,.08);border-color:rgba(245,166,35,.25);color:var(--amber);}
+.rop-copy-btn.amber:hover{background:rgba(245,166,35,.18);}
+
 </style>
 </head>
 <body>
@@ -565,17 +621,93 @@ body{font-family:'Barlow Condensed',sans-serif;background:#02030A;color:#e2e8f0;
     <button class="btn btn-ghost" onclick="exportScenes()">⬇ Export</button>
   </div>
 
-  <!-- ── GENERATORS (from Studio 3) ── -->
+  <!-- ══ UPGRADE PANEL ══ -->
   <div class="gen-section">
-    <div class="e-title" style="margin-top:4px;">Generators</div>
-    <div class="gen-grid">
-      <button class="btn btn-ghost" onclick="genHook()">🎣 Hook Generator</button>
-      <button class="btn btn-ghost" onclick="genCaption()">✍ Caption Generator</button>
-      <button class="btn btn-ghost" onclick="genTags()">🏷 Hashtag Generator</button>
-      <button class="btn btn-ghost" onclick="genIdea()">💡 Reel Idea</button>
+
+    <!-- Hook Score Meter -->
+    <div class="e-title" style="margin-top:4px;">Hook Strength Score</div>
+    <div class="hook-score-card" id="hookScoreCard">
+      <div class="hs-row">
+        <div><div class="hs-label">Score</div><div class="hs-score" id="hsScore">—</div></div>
+        <div class="hs-bar-wrap"><div class="hs-bar-fill" id="hsBarFill" style="width:0%;background:var(--amber);"></div></div>
+      </div>
+      <div class="hs-dim">
+        <span class="hs-dim-item" id="hsCuriosity">Curiosity: —</span>
+        <span class="hs-dim-item" id="hsOutcome">Outcome: —</span>
+        <span class="hs-dim-item" id="hsScroll">Scroll-Stop: —</span>
+        <span class="hs-dim-item" id="hsAudience">Audience: —</span>
+      </div>
+      <div class="hs-tip" id="hsTip"></div>
     </div>
-    <div class="gen-output" id="genOut"></div>
-    <div class="hashtag-out" id="tagOut"></div>
+
+    <!-- Viral Hook Generator -->
+    <div class="e-title">Viral Hook Generator</div>
+    <div style="display:flex;gap:5px;margin-bottom:6px;">
+      <button class="btn btn-c" style="flex:1;" onclick="genViralHooks()">⚡ Generate 5 Viral Hooks</button>
+      <button class="btn btn-ghost" onclick="genIdea()">💡 Idea</button>
+    </div>
+    <div class="hook-gen-panel" id="hookGenPanel"></div>
+
+    <!-- Viral Reel Templates -->
+    <div class="e-title">Viral Reel Templates</div>
+    <div class="tpl-grid">
+      <button class="tpl-btn" onclick="applyTemplate('beforeafter',this)">↔ Before vs After<span class="tpl-tag">high reach</span></button>
+      <button class="tpl-btn" onclick="applyTemplate('3prompts',this)">3️⃣ 3 Prompts<span class="tpl-tag">saves + shares</span></button>
+      <button class="tpl-btn" onclick="applyTemplate('stopdoing',this)">🛑 Stop Doing This<span class="tpl-tag">viral format</span></button>
+      <button class="tpl-btn" onclick="applyTemplate('challenge',this)">🎯 Prompt Challenge<span class="tpl-tag">engagement</span></button>
+      <button class="tpl-btn" onclick="applyTemplate('freeresource',this)">🎁 Free Resource<span class="tpl-tag">list growth</span></button>
+      <button class="tpl-btn" onclick="applyTemplate('casestudy',this)">📊 Case Study<span class="tpl-tag">authority</span></button>
+    </div>
+
+    <!-- Retention Timeline -->
+    <div class="e-title">Retention Timeline</div>
+    <div class="retention-card">
+      <div class="hs-label">Pacing · Total: 15 seconds · Instagram optimal</div>
+      <div class="ret-row" style="margin:8px 0 4px;">
+        <div class="ret-seg" style="width:13.3%;background:#F5A623;">2s</div>
+        <div class="ret-seg" style="width:13.3%;background:#FF4757;">2s</div>
+        <div class="ret-seg" style="width:33.4%;background:#00D4FF;">5s</div>
+        <div class="ret-seg" style="width:20%;background:#22C55E;">3s</div>
+        <div class="ret-seg" style="width:20%;background:#A855F7;">3s</div>
+      </div>
+      <div class="ret-labels">
+        <span class="ret-lbl" style="color:rgba(245,166,35,.6)">Hook</span>
+        <span class="ret-lbl" style="color:rgba(255,71,87,.6)">Problem</span>
+        <span class="ret-lbl" style="color:rgba(0,212,255,.6)">Prompt</span>
+        <span class="ret-lbl" style="color:rgba(34,197,94,.6)">Result</span>
+        <span class="ret-lbl" style="color:rgba(168,85,247,.6)">CTA</span>
+      </div>
+    </div>
+
+    <!-- Generate Complete Reel -->
+    <div class="e-title">Complete Reel Generator</div>
+    <button class="gen-reel-btn" onclick="generateCompleteReel()">🎬 Generate Complete Viral Reel</button>
+    <div class="reel-output-panel" id="reelOutputPanel">
+      <div class="rop-section"><div class="rop-label">Hook</div><div class="rop-val" id="ropHook"></div></div>
+      <div class="rop-section"><div class="rop-label">Problem</div><div class="rop-val" id="ropProb"></div></div>
+      <div class="rop-section"><div class="rop-label">Prompt (on screen)</div><div class="rop-prompt" id="ropPrompt"></div></div>
+      <div class="rop-section"><div class="rop-label">Result</div><div class="rop-val" id="ropResult" style="color:var(--green);font-weight:700;"></div></div>
+      <div class="rop-section"><div class="rop-label">CTA</div><div class="rop-val" id="ropCta" style="color:var(--amber);font-weight:700;"></div></div>
+      <div class="rop-section">
+        <div class="rop-label">Caption</div>
+        <div class="rop-caption" id="ropCaption"></div>
+        <div class="rop-copy-row">
+          <button class="rop-copy-btn amber" onclick="copyRopField('ropCaption')">📋 Copy Caption</button>
+          <button class="rop-copy-btn" onclick="loadReelFromOutput()">→ Load into Editor</button>
+        </div>
+      </div>
+      <div class="rop-section">
+        <div class="rop-label">Hashtags</div>
+        <div class="rop-tags" id="ropTags"></div>
+        <div class="rop-copy-row">
+          <button class="rop-copy-btn" onclick="copyRopField('ropTags')">📋 Copy Hashtags</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- hidden helpers for copyModal compat -->
+    <div class="gen-output" id="genOut" style="display:none;"></div>
+    <div class="hashtag-out" id="tagOut" style="display:none;"></div>
   </div>
 
 </div><!-- /editor -->
@@ -1750,14 +1882,14 @@ function buildScenes(){
       <div class="sc-rhl" id="ph_rhl" style="font-size:24px;color:#fff;"></div>
       <div class="sc-ritems" id="ph_ritems"></div>
     </div>
-    <div class="sc sc-cta" id="sc4">
-      <div class="blob" style="width:140px;height:140px;top:-45px;right:-45px;animation:floatA 8s ease-in-out infinite;"></div>
-      <div class="blob" style="width:90px;height:90px;bottom:-30px;left:-30px;background:rgba(168,85,247,.12);animation:floatB 10s ease-in-out infinite;"></div>
-      <div class="sc-ctop" id="ph_ctop" style="color:var(--amber);">GET THE FREE KIT →</div>
-      <div class="sc-cq" style="font-size:24px;">WANT MORE<br>PROMPTS?</div>
-      <div class="sc-cbox pulse" id="ph_cbox">
-        <span class="sc-ckw" id="ph_ckw"></span>
-        <div class="sc-csub" id="ph_csub"></div>
+    <div class="sc sc-cta" id="sc4" style="align-items:center;justify-content:center;text-align:center;">
+      <div class="blob" style="width:120px;height:120px;top:-30px;right:-30px;animation:floatA 8s ease-in-out infinite;"></div>
+      <div class="blob" style="width:70px;height:70px;bottom:-20px;left:-20px;background:rgba(168,85,247,.12);animation:floatB 10s ease-in-out infinite;"></div>
+      <div class="sc-ctop" id="ph_ctop" style="color:var(--amber);margin-bottom:6px;text-align:center;width:100%;">GET THE FREE KIT →</div>
+      <div class="sc-cq" style="font-size:20px;margin-bottom:10px;text-align:center;width:100%;">WANT MORE<br>PROMPTS?</div>
+      <div class="sc-cbox pulse" id="ph_cbox" style="padding:10px 12px;text-align:center;">
+        <span class="sc-ckw" id="ph_ckw" style="font-size:16px;display:block;text-align:center;word-break:break-word;"></span>
+        <div class="sc-csub" id="ph_csub" style="font-size:8px;margin-top:4px;line-height:1.5;text-align:center;"></div>
       </div>
     </div>`;
 }
@@ -1811,7 +1943,7 @@ function renderPrev(){
   const phCsub=document.getElementById('ph_csub');
   if(phCsub)phCsub.textContent=document.getElementById('fCtaSub').value||'';
   const cbox=document.getElementById('ph_cbox');
-  if(cbox){cbox.style.background=ha(ac,.1);cbox.style.border=`1px solid ${ha(ac,.3)}`;}
+  if(cbox){cbox.style.background=ha(ac,.1);cbox.style.border=`1px solid ${ha(ac,.3)}`;cbox.style.textAlign='center';}
 }
 
 /* ══ VISUAL FX ENGINE ══ */
@@ -2920,16 +3052,344 @@ function _scResult(ctx,W,H,pct,sd){
 
 function _scCTA(ctx,W,H,pct,sd){
   _bgGrad(ctx,W,H,'#080414','#160928');
-  _blob(ctx,W*1.07,H*-.04,W*.52,sd.accent,.22);_blob(ctx,W*-.05,H*.7,W*.37,'#A855F7',.13);
-  const a=_fi(pct);ctx.save();ctx.globalAlpha=a;ctx.textAlign='left';ctx.textBaseline='top';
-  ctx.font=`bold ${Math.round(W*.032)}px Arial,sans-serif`;ctx.fillStyle=sd.accent;ctx.fillText('GET THE FREE KIT →',W*.089,H*.158);
-  ctx.font=`900 ${Math.round(W*.14)}px Arial Black,Arial,sans-serif`;ctx.fillStyle='#FFF';
-  ctx.fillText('WANT MORE',W*.089,H*.21);ctx.fillText('PROMPTS?',W*.089,H*.285);
-  const bx=W*.089,by=H*.392,bw=W-W*.178,bh=H*.175;
-  _rr(ctx,bx,by,bw,bh,16,_rgba(sd.accent,.13),_rgba(sd.accent,.40),2.5);
-  ctx.font=`900 ${Math.round(W*.122)}px Arial Black,Arial,sans-serif`;ctx.fillStyle=sd.accent;ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText(sd.ctaKw,W/2,by+H*.023);
-  ctx.font=`300 ${Math.round(W*.044)}px Arial,sans-serif`;ctx.fillStyle='rgba(255,255,255,.48)';ctx.textBaseline='middle';ctx.fillText(sd.ctaSub,W/2,by+bh*.73);ctx.restore();
+  _blob(ctx,W*1.07,H*-.04,W*.52,sd.accent,.22);
+  _blob(ctx,W*-.05,H*.7,W*.37,'#A855F7',.13);
+  const a=_fi(pct);ctx.save();ctx.globalAlpha=a;
+
+  // ── Top label ──────────────────────────────────────────────────
+  const labelFs=Math.round(W*.028);
+  ctx.font=`700 ${labelFs}px Arial,sans-serif`;
+  ctx.fillStyle=sd.accent;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('GET THE FREE KIT →',W/2,H*.105);
+
+  // ── Big headline ───────────────────────────────────────────────
+  const hlFs=Math.round(W*.115);
+  ctx.font=`900 ${hlFs}px Arial Black,Arial,sans-serif`;
+  ctx.fillStyle='#FFFFFF';
+  ctx.textAlign='center';ctx.textBaseline='top';
+  ctx.fillText('WANT MORE',W/2,H*.148);
+  ctx.fillText('PROMPTS?',W/2,H*.148+hlFs*1.08);
+
+  // ── CTA box ────────────────────────────────────────────────────
+  const bx=W*.072,by=H*.335,bw=W-W*.144,bh=H*.215;
+  _rr(ctx,bx,by,bw,bh,20,_rgba(sd.accent,.14),_rgba(sd.accent,.42),2.5);
+
+  // Keyword — auto-size so it always fits inside box
+  // Measure at max size then scale down if needed
+  let kwFs=Math.round(W*.115);
+  ctx.font=`900 ${kwFs}px Arial Black,Arial,sans-serif`;
+  while(ctx.measureText(sd.ctaKw).width > bw-W*.08 && kwFs > Math.round(W*.06)){
+    kwFs -= Math.round(W*.005);
+    ctx.font=`900 ${kwFs}px Arial Black,Arial,sans-serif`;
+  }
+  ctx.fillStyle=sd.accent;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(sd.ctaKw,W/2,by+bh*.38);
+
+  // Subtext — centered, wrapped in 2 lines max
+  const subFs=Math.round(W*.042);
+  ctx.font=`300 ${subFs}px Arial,sans-serif`;
+  ctx.fillStyle='rgba(255,255,255,.60)';
+  ctx.textAlign='center';ctx.textBaseline='top';
+  const subWords=sd.ctaSub.split(' ');
+  const subMaxW=bw-W*.1;
+  let subLine1='',subLine2='';
+  for(const w of subWords){
+    const t=subLine1?subLine1+' '+w:w;
+    if(ctx.measureText(t).width>subMaxW&&subLine1){subLine2=(subLine2?subLine2+' ':'')+w;}
+    else subLine1=t;
+  }
+  const subY=by+bh*.62;
+  const subLh=subFs*1.35;
+  if(subLine2){
+    ctx.fillText(subLine1,W/2,subY-subLh/2);
+    ctx.fillText(subLine2,W/2,subY+subLh/2);
+  } else {
+    ctx.fillText(subLine1,W/2,subY);
+  }
+
+  // ── Bottom accent line ─────────────────────────────────────────
+  ctx.fillStyle=sd.accent;
+  ctx.fillRect(W*.072,by+bh+H*.028,W*.12,3);
+
+  ctx.restore();
 }
+
+
+
+/* ══════════════════════════════════════════════════════════════════
+   FEATURE ENGINE — Hook Score · Viral Hooks · Templates
+   Complete Reel Generator · Retention · Caption + Hashtags
+   ══════════════════════════════════════════════════════════════════ */
+
+// ── HOOK SCORE ─────────────────────────────────────────────────────
+const STOP_WORDS = ['stop','most','this','why','never','always','secret','mistake','wrong','best','fastest','easiest','free','instant','3','5','10'];
+const CURIOSITY_WORDS = ['stop','never','secret','why','before','mistake','wrong','most','don\'t know'];
+const OUTCOME_WORDS = ['saves','builds','writes','creates','generates','turns','gets','finds','doubles','grows'];
+const URGENCY_WORDS = ['now','today','this week','instantly','in 60 sec','in seconds','in minutes','before'];
+
+function scoreHook(hook){
+  if(!hook || hook.length < 5) return null;
+  const h = hook.toLowerCase();
+  let score = 0;
+  // Curiosity gap
+  const curScore = CURIOSITY_WORDS.filter(w=>h.includes(w)).length;
+  const curiosityRating = curScore>=2?'High':curScore===1?'Medium':'Low';
+  score += curScore>=2?3:curScore===1?2:0;
+  // Outcome clarity
+  const outScore = OUTCOME_WORDS.filter(w=>h.includes(w)).length;
+  const outcomeRating = outScore>=1?'Clear':h.includes(' your ')||h.includes(' you ')?'Medium':'Weak';
+  score += outScore>=1?2.5:h.includes(' your ')?1.5:0;
+  // Scroll-stop strength
+  const stopScore = STOP_WORDS.filter(w=>h.split(/\s/).includes(w)).length;
+  const scrollRating = stopScore>=2?'Strong':stopScore===1?'Medium':'Low';
+  score += stopScore>=2?2.5:stopScore===1?1.5:0;
+  // Audience specificity
+  const hasAudience = h.includes('creator')||h.includes('you ')||h.includes('your ')||h.includes('creators')||h.includes('freelancer')||h.includes('entrepreneur');
+  const audienceRating = hasAudience?'Specific':'General';
+  score += hasAudience?2:0.5;
+  // Length bonus/penalty
+  const wc = hook.trim().split(/\s+/).length;
+  if(wc>=5&&wc<=10) score+=0.5;
+  else if(wc<4||wc>14) score-=0.5;
+  // Cap and round
+  score = Math.min(10, Math.max(0, Math.round(score*10)/10));
+  return { score, curiosityRating, outcomeRating, scrollRating, audienceRating };
+}
+
+function updateHookScore(){
+  const hook = document.getElementById('fHook')?.value||'';
+  const result = scoreHook(hook);
+  const scoreEl=document.getElementById('hsScore');
+  const barEl=document.getElementById('hsBarFill');
+  const curEl=document.getElementById('hsCuriosity');
+  const outEl=document.getElementById('hsOutcome');
+  const scrEl=document.getElementById('hsScroll');
+  const audEl=document.getElementById('hsAudience');
+  const tipEl=document.getElementById('hsTip');
+  if(!scoreEl) return;
+  if(!result){ scoreEl.textContent='—'; barEl.style.width='0%'; return; }
+  const {score,curiosityRating,outcomeRating,scrollRating,audienceRating}=result;
+  scoreEl.textContent=score.toFixed(1)+'/10';
+  const pct=score/10*100;
+  barEl.style.width=pct+'%';
+  barEl.style.background=score>=8?'#22C55E':score>=6?'#F5A623':'#FF4757';
+  const ratingClass=r=>r==='High'||r==='Clear'||r==='Strong'||r==='Specific'?'high':r==='Medium'?'med':'low';
+  curEl.textContent='Curiosity: '+curiosityRating; curEl.className='hs-dim-item '+ratingClass(curiosityRating);
+  outEl.textContent='Outcome: '+outcomeRating; outEl.className='hs-dim-item '+ratingClass(outcomeRating);
+  scrEl.textContent='Scroll-Stop: '+scrollRating; scrEl.className='hs-dim-item '+ratingClass(scrollRating);
+  audEl.textContent='Audience: '+audienceRating; audEl.className='hs-dim-item '+ratingClass(audienceRating);
+  if(score<7){
+    tipEl.textContent='💡 Tip: '+(curiosityRating==='Low'?'Add a curiosity gap — "Most don\'t know..." or "STOP doing..."':outcomeRating==='Weak'?'Add a clear outcome — what will they get?':scrollRating==='Low'?'Start with a power word — STOP, This, Most, Why...':'Mention your audience — "creators", "you", "your"');
+    tipEl.classList.add('show');
+  } else {
+    tipEl.textContent=''; tipEl.classList.remove('show');
+  }
+}
+
+// ── VIRAL HOOK GENERATOR ─────────────────────────────────────────
+const VIRAL_HOOK_TEMPLATES = [
+  h=>`Stop using ChatGPT ${['wrong','like this','without this','randomly'][Math.floor(Math.random()*4)]}.`,
+  h=>`Most ${['creators','people','marketers','freelancers'][Math.floor(Math.random()*4)]} don't know this prompt.`,
+  h=>`This prompt ${['saved me 5 hours','generates 30 ideas','writes your captions','builds your funnel'][Math.floor(Math.random()*4)]}.`,
+  h=>`${['3','5','10'][Math.floor(Math.random()*3)]} prompts every creator needs.`,
+  h=>`This changed how I use ChatGPT ${['for content','forever','every week','for monetization'][Math.floor(Math.random()*4)]}.`,
+  h=>`If you're a creator, save this ${['prompt','hook formula','system','workflow'][Math.floor(Math.random()*4)]}.`,
+  h=>`Before vs after using this prompt.`,
+  h=>`I built ${['30 posts','a $14 product','a full funnel','an email list'][Math.floor(Math.random()*4)]} with one prompt.`,
+  h=>`Use this prompt before every ${['post','reel','launch','email'][Math.floor(Math.random()*4)]}.`,
+  h=>`Never ${['run out of ideas','write captions manually','guess what to post','start from scratch'][Math.floor(Math.random()*4)]} again.`,
+];
+
+function genViralHooks(){
+  const panel = document.getElementById('hookGenPanel');
+  if(!panel) return;
+  panel.innerHTML='';
+  // Pick 5 random templates
+  const chosen = [...VIRAL_HOOK_TEMPLATES].sort(()=>Math.random()-.5).slice(0,5);
+  chosen.forEach(fn=>{
+    const hook = fn();
+    const result = scoreHook(hook);
+    const sc = result?result.score:7;
+    const div = document.createElement('div');
+    div.className='hook-option';
+    div.innerHTML=`
+      <span style="flex:1;">${hook}</span>
+      <span class="hook-score-mini ${sc>=8?'hs-good':'hs-ok'}">${sc.toFixed(1)}</span>
+      <span class="hook-use-btn">Use →</span>`;
+    div.querySelector('.hook-use-btn').onclick=()=>{
+      document.getElementById('fHook').value=hook;
+      renderPrev(); updateHookScore();
+      panel.classList.remove('show');
+    };
+    panel.appendChild(div);
+  });
+  panel.classList.add('show');
+}
+
+// ── VIRAL REEL TEMPLATES ──────────────────────────────────────────
+const TEMPLATES = {
+  beforeafter:{
+    hook:'Before using this prompt vs after.',
+    prob:'Most creators use ChatGPT randomly and get weak results.',
+    probBody:'The difference between before and after isn\'t ChatGPT — it\'s the prompt structure. This shows both.',
+    prompt:'Act as a prompt engineer.\n\nShow the before vs after\nof a structured prompt for [task].',
+    result:'RESULTS TRANSFORMED.',items:['Before: generic output','After: production-ready','The difference is the prompt']
+  },
+  '3prompts':{
+    hook:'3 prompts every creator needs.',
+    prob:'Most creators only know 1 way to use ChatGPT. There are 3 that change everything.',
+    probBody:'These 3 prompts cover the 3 things every creator needs: content ideas, captions, and monetization.',
+    prompt:'Act as a content strategist.\n\nGive me the 3 most valuable\nprompts for a [niche] creator.',
+    result:'3 CORE PROMPTS REVEALED.',items:['Prompt 1: content ideas','Prompt 2: captions','Prompt 3: monetization']
+  },
+  stopdoing:{
+    hook:'Stop doing this with ChatGPT.',
+    prob:'There is one mistake that makes every ChatGPT output generic and unusable.',
+    probBody:'Asking vague questions gives vague answers. This prompt structure fixes that permanently.',
+    prompt:'Act as a prompt coach.\n\nShow the exact mistake creators make\nand the fix for [use case].',
+    result:'GENERIC OUTPUT ELIMINATED.',items:['The mistake revealed','The fix shown','Instantly better results']
+  },
+  challenge:{
+    hook:'Try this prompt challenge.',
+    prob:'Most creators talk about AI. Almost none actually use it consistently.',
+    probBody:'A 7-day challenge builds the habit faster than anything else. One prompt per day, one result per day.',
+    prompt:'Act as an AI challenge designer.\n\nCreate a 7-day prompt challenge\nfor [niche] creators.',
+    result:'CHALLENGE ACCEPTED.',items:['7-day daily prompts','One result each day','Share your progress']
+  },
+  freeresource:{
+    hook:'I built a free AI prompt starter kit.',
+    prob:'The biggest barrier to using AI is not knowing which prompts to start with.',
+    probBody:'This starter kit gives you 10 structured prompts for content, monetization, and workflow — free.',
+    prompt:'Act as a prompt kit designer.\n\nBuild a 10-prompt starter kit\nfor [niche] creators.',
+    result:'FREE KIT READY.',items:['10 essential prompts','Beginner to advanced','Comment PROMPTS to get it']
+  },
+  casestudy:{
+    hook:'This prompt generated 30 posts.',
+    prob:'Most creators believe content creation takes hours every week. It doesn\'t have to.',
+    probBody:'One 90-minute batching session using this prompt generated 30 posts. Here is the exact prompt.',
+    prompt:'Act as a content batch expert.\n\nGenerate 30 posts for [niche]\nusing 5 content pillars.',
+    result:'30 POSTS IN ONE SESSION.',items:['30 fully written posts','5 pillars structured','Batch once, post for a month']
+  }
+};
+
+function applyTemplate(name, btn){
+  const tpl = TEMPLATES[name]; if(!tpl) return;
+  document.getElementById('fHook').value=tpl.hook;
+  document.getElementById('fProbStmt').value=tpl.prob;
+  document.getElementById('fProbBody').value=tpl.probBody;
+  document.getElementById('fPrompt').value=tpl.prompt;
+  document.getElementById('fResHl').value=tpl.result;
+  document.getElementById('fResItems').value=tpl.items.join('\n');
+  document.querySelectorAll('.tpl-btn').forEach(b=>b.classList.remove('active-tpl'));
+  btn.classList.add('active-tpl');
+  renderPrev(); updateHookScore();
+  _notify('Template loaded — edit and record MP4','idle');
+}
+
+// ── GENERATE COMPLETE REEL ────────────────────────────────────────
+const COMPLETE_REEL_DATA = [
+  {hook:'Stop asking ChatGPT random questions.',prob:'That is why most people get weak results.',prompt:'Act as a content strategist.\nGenerate 10 viral Instagram hooks\nfor [topic].',result:'10 ready-to-post hooks instantly.',cta:'Comment PROMPTS',tags:'#aiprompts #chatgpttips #contentcreation #digitalproducts'},
+  {hook:'This prompt writes your captions instantly.',prob:'Writing captions manually is the biggest time drain.',prompt:'Act as a copywriter.\nWrite 5 Instagram captions\nfor [niche] content.',result:'5 captions written in 60 seconds.',cta:'Comment PROMPTS',tags:'#aiprompts #instagramgrowth #contentcreator #chatgpttips'},
+  {hook:'Use this prompt before every post.',prob:'Most posts fail in the first 2 seconds.',prompt:'Act as a hook specialist.\nWrite 10 scroll-stopping hooks\nfor a post about [topic].',result:'10 hooks. Pick the strongest.',cta:'Comment PROMPTS',tags:'#hooks #contentcreation #aiprompts #viralcontent'},
+  {hook:'This turns ideas into digital products.',prob:'Most creators have ideas but do not know how to package them.',prompt:'Act as a product strategist.\nTransform this idea: [idea]\ninto a sellable digital product.',result:'Product concept ready to build.',cta:'Comment PROMPTS',tags:'#digitalproducts #gumroad #aiprompts #makemoneyonline'},
+  {hook:'This prompt builds your sales funnel.',prob:'Followers do not automatically become buyers.',prompt:'Act as a funnel strategist.\nBuild a complete funnel\nfor [offer].',result:'Full funnel mapped and ready.',cta:'Comment PROMPTS',tags:'#salesfunnel #digitalmarketing #aiprompts #chatgpt'},
+  {hook:'3 prompts running my business.',prob:'Most creators manage their business manually.',prompt:'Act as a business systems architect.\nBuild 3 core AI prompts\nthat run a [type] creator business.',result:'3 prompts. One complete system.',cta:'Comment PROMPTS',tags:'#aibusiness #productivity #chatgpt #promptaider'},
+  {hook:'Most people don\'t know this prompt.',prob:'Generic AI use gives generic results.',prompt:'Act as a [niche] expert.\nGive me 10 insights that only\nexperienced [niche] practitioners know.',result:'Insider knowledge ready to post.',cta:'Comment PROMPTS',tags:'#aiprompts #contentcreation #chatgpttips #creatoreconomy'},
+  {hook:'Turn 1 post into 20 pieces of content.',prob:'Creating fresh content for every platform is unsustainable.',prompt:'Act as a content repurposing expert.\nTurn this post: [post]\ninto 20 platform-native pieces.',result:'1 post becomes 20 pieces.',cta:'Comment PROMPTS',tags:'#contentrepurposing #socialmedia #aiprompts #creatortips'},
+];
+
+let _lastGenIndex = -1;
+
+function generateCompleteReel(){
+  // Rotate through reels or pick from current IDEAS
+  _lastGenIndex = (_lastGenIndex + 1) % Math.min(COMPLETE_REEL_DATA.length, IDEAS.length);
+  const d = IDEAS[_lastGenIndex] || COMPLETE_REEL_DATA[_lastGenIndex % COMPLETE_REEL_DATA.length];
+  const hook = d.hook;
+  const prob = d.prob || 'Most people do not use this correctly.';
+  const prompt = d.prompt;
+  const result = d.result || d.items?.[0] || 'Results instantly.';
+  const cta = 'Comment PROMPTS and I\'ll send you my FREE AI Starter Kit.';
+  const tags = d.tags || '#aiprompts #chatgpttips #contentcreation #promptengineering #aiworkflow #creatortips';
+  const caption = `${hook}\n\nMost creators use AI randomly and get weak results.\n\nUse this prompt instead 👇\n\n${prompt.split('\n').slice(0,3).join(' ')} [...]\n\nComment PROMPTS and I\'ll DM you the full free starter kit 🎁\n\n${tags}`;
+
+  // Populate output panel
+  document.getElementById('ropHook').textContent=hook;
+  document.getElementById('ropProb').textContent=prob;
+  document.getElementById('ropPrompt').textContent=prompt;
+  document.getElementById('ropResult').textContent=result;
+  document.getElementById('ropCta').textContent=cta;
+  document.getElementById('ropCaption').textContent=caption;
+  document.getElementById('ropTags').textContent=tags;
+  document.getElementById('reelOutputPanel').classList.add('show');
+
+  // Also load into editor fields
+  document.getElementById('fHook').value=hook;
+  document.getElementById('fProbStmt').value=prob;
+  document.getElementById('fPrompt').value=prompt;
+  document.getElementById('fResHl').value=result;
+  if(d.items) document.getElementById('fResItems').value=d.items.join('\n');
+  renderPrev(); updateHookScore();
+  _notify('Complete reel generated — click Load into Editor or Download MP4','idle');
+}
+
+function loadReelFromOutput(){
+  // Already loaded in generateCompleteReel — scroll to preview
+  jumpTo(0); renderPrev();
+  _notify('Reel loaded into editor — preview and record','idle');
+}
+
+function copyRopField(id){
+  const el=document.getElementById(id); if(!el) return;
+  const text=el.textContent||el.innerText||'';
+  navigator.clipboard.writeText(text).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0;';
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+  });
+  _notify('✓ Copied to clipboard — paste into Instagram','done');
+}
+
+// ── TOPIC ROTATION ENGINE ─────────────────────────────────────────
+const TOPIC_ROTATION = {
+  Monday:'Creator Content',Tuesday:'Monetization',Wednesday:'AI Workflow',
+  Thursday:'Professional',Friday:'Viral Authority',Saturday:'Email Marketing',Sunday:'Personal Brand'
+};
+function getDayCategory(){
+  const day=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
+  return {day, cat:TOPIC_ROTATION[day]||'Creator Content'};
+}
+
+// ── WIRE renderPrev to also score hook ───────────────────────────
+const _origRenderPrev = renderPrev;
+renderPrev = function(){
+  _origRenderPrev.call(this);
+  updateHookScore();
+};
+
+// ── buildScenes passthrough (retention bar is in editor col 2 only) ─
+const _origBuildScenes = buildScenes;
+buildScenes = function(){
+  _origBuildScenes.call(this);
+  // Retention timeline is shown in the editor panel (Col 2), not in the phone preview
+};
+
+// ── UPDATE genHook to also use viral templates ────────────────────
+function genHook(){
+  genViralHooks();
+}
+function genCaption(){
+  const hook=document.getElementById('fHook').value||'[hook]';
+  const prompt=document.getElementById('fPrompt').value||'[prompt]';
+  const caption=`${hook}\n\nMost people use AI randomly and get bad results.\n\nTry this prompt:\n\n${prompt}\n\nComment PROMPTS and I\'ll send my free AI Starter Kit.`;
+  const el=document.getElementById('genOut'); if(el){el.textContent=caption;el.style.display='block';}
+}
+function genTags(){
+  const tags=HASHTAGS_BANK[Math.floor(Math.random()*HASHTAGS_BANK.length)];
+  const el=document.getElementById('tagOut'); if(el){el.textContent=tags;el.style.display='block';}
+}
+
+/* END FEATURE ENGINE */
 
 
 /* ══ EXPORT SCENES as PNG — uses Canvas 2D renderer ══ */
